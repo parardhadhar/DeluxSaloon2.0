@@ -144,51 +144,54 @@ function ShutterSVG({ region }: { region: Region }) {
 function ShopSign({ region, weather, loading }: { region: Region; weather: {icon:string;temp:string;condition:string}; loading: boolean }) {
   const t = THEMES[region];
   return (
-    <div style={{ position:'absolute', top:'10%', left:'50%', transform:'translateX(-50%)',
-      zIndex:20, display:'flex', flexDirection:'column', alignItems:'center', pointerEvents:'none', minWidth:280 }}>
+    <div style={{
+      position:'absolute', top:'6vh', left:'50%', transform:'translateX(-50%)',
+      zIndex:20, display:'flex', flexDirection:'column', alignItems:'center', pointerEvents:'none',
+      width: '92vw', maxWidth: 380,
+    }}>
       {/* Chain links */}
-      <div style={{display:'flex',gap:26,marginBottom:3}}>
+      <div style={{display:'flex',gap:22,marginBottom:2}}>
         {[0,1,2].map(i=>(
-          <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:3}}>
+          <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:2}}>
             {[0,1,2].map(j=>(
-              <div key={j} style={{width:4,height:8,borderRadius:4,background:'#777',boxShadow:'0 1px 3px rgba(0,0,0,0.7)',border:'1px solid #555'}}/>
+              <div key={j} style={{width:3,height:6,borderRadius:3,background:'#777',boxShadow:'0 1px 3px rgba(0,0,0,0.7)',border:'1px solid #555'}}/>
             ))}
           </div>
         ))}
       </div>
       <div style={{
-        background: t.signBg, border:`4px solid ${t.signBorder}`, borderRadius:14,
-        padding:'18px 32px 16px', textAlign:'center',
+        background: t.signBg, border:`3px solid ${t.signBorder}`, borderRadius:14,
+        padding:'14px 20px 12px', textAlign:'center',
         boxShadow:`0 14px 48px rgba(0,0,0,0.85), inset 0 2px 0 rgba(255,255,255,0.08)`,
-        maxWidth:'80vw', minWidth:270,
+        width: '100%',
       }}>
-        <div style={{fontSize:28,marginBottom:8,animation:'spin 2s linear infinite',display:'inline-block'}}>💈</div>
-        <div style={{fontFamily:'Georgia,serif',fontSize:'clamp(20px,3.5vw,28px)',fontWeight:700,
-          color:t.signBorder,letterSpacing:'0.04em',textShadow:'0 2px 12px rgba(0,0,0,0.95)',lineHeight:1.2,marginBottom:3}}>
+        <div style={{fontSize:'clamp(22px, 5vw, 28px)',marginBottom:4,animation:'spin 2s linear infinite',display:'inline-block'}}>💈</div>
+        <div style={{fontFamily:'Georgia,serif',fontSize:'clamp(18px, 4.5vw, 26px)',fontWeight:700,
+          color:t.signBorder,letterSpacing:'0.03em',textShadow:'0 2px 12px rgba(0,0,0,0.95)',lineHeight:1.2,marginBottom:2}}>
           {t.signTitle}
         </div>
-        <div style={{fontFamily:'Work Sans,sans-serif',fontSize:9,color:'rgba(255,255,255,0.45)',
-          letterSpacing:'0.2em',textTransform:'uppercase',marginBottom:12}}>
+        <div style={{fontFamily:'Work Sans,sans-serif',fontSize:'clamp(8px, 2.2vw, 9px)',color:'rgba(255,255,255,0.45)',
+          letterSpacing:'0.18em',textTransform:'uppercase',marginBottom:8}}>
           {t.signTitleEn}
         </div>
-        <div style={{display:'inline-flex',alignItems:'center',gap:6,background:'rgba(0,0,0,0.55)',
-          border:`1.5px solid ${t.signBorder}`,borderRadius:6,padding:'5px 18px',marginBottom:12}}>
-          <span style={{width:7,height:7,borderRadius:'50%',background:'#ff4444',display:'inline-block',boxShadow:'0 0 6px #ff4444'}}/>
-          <span style={{fontFamily:'JetBrains Mono,monospace',fontSize:13,fontWeight:700,color:t.signBorder,letterSpacing:'0.2em'}}>
+        <div style={{display:'inline-flex',alignItems:'center',gap:5,background:'rgba(0,0,0,0.55)',
+          border:`1px solid ${t.signBorder}`,borderRadius:6,padding:'4px 14px',marginBottom:8}}>
+          <span style={{width:6,height:6,borderRadius:'50%',background:'#ff4444',display:'inline-block',boxShadow:'0 0 6px #ff4444'}}/>
+          <span style={{fontFamily:'JetBrains Mono,monospace',fontSize:'clamp(11px, 3vw, 13px)',fontWeight:700,color:t.signBorder,letterSpacing:'0.18em'}}>
             {t.closedWord}
           </span>
         </div>
         {!loading && (
-          <div style={{display:'flex',justifyContent:'center',marginBottom:10}}>
-            <div style={{display:'flex',alignItems:'center',gap:8,background:'rgba(0,0,0,0.45)',
-              border:'1px solid rgba(255,255,255,0.14)',borderRadius:20,padding:'5px 12px'}}>
-              <span style={{fontSize:16}}>{weather.icon}</span>
-              <span style={{fontFamily:'JetBrains Mono,monospace',fontSize:13,fontWeight:700,color:'#fff'}}>{weather.temp}</span>
-              <span style={{fontFamily:'Work Sans,sans-serif',fontSize:10,color:'rgba(255,255,255,0.6)'}}>{weather.condition}</span>
+          <div style={{display:'flex',justifyContent:'center',marginBottom:6}}>
+            <div style={{display:'flex',alignItems:'center',gap:6,background:'rgba(0,0,0,0.45)',
+              border:'1px solid rgba(255,255,255,0.14)',borderRadius:20,padding:'4px 10px',maxWidth:'100%'}}>
+              <span style={{fontSize:14}}>{weather.icon}</span>
+              <span style={{fontFamily:'JetBrains Mono,monospace',fontSize:'clamp(11px, 2.8vw, 12px)',fontWeight:700,color:'#fff'}}>{weather.temp}</span>
+              <span style={{fontFamily:'Work Sans,sans-serif',fontSize:'clamp(9px, 2.4vw, 10px)',color:'rgba(255,255,255,0.6)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{weather.condition}</span>
             </div>
           </div>
         )}
-        <div style={{fontFamily:'Work Sans,sans-serif',fontSize:11,color:'rgba(255,255,255,0.35)',fontStyle:'italic'}}>
+        <div style={{fontFamily:'Work Sans,sans-serif',fontSize:'clamp(9.5px, 2.5vw, 11px)',color:'rgba(255,255,255,0.35)',fontStyle:'italic'}}>
           {t.tagline}
         </div>
       </div>
@@ -203,9 +206,10 @@ function ShutterRegionTabs({ active, onChange }: { active: Region; onChange: (r:
       className="no-drag"
       onPointerDown={e => e.stopPropagation()}
       style={{
-        position:'absolute',bottom:'22%',left:'50%',transform:'translateX(-50%)',
-        zIndex:25,display:'flex',gap:8,background:'rgba(0,0,0,0.7)',backdropFilter:'blur(12px)',
-        border:'1px solid rgba(255,255,255,0.12)',borderRadius:10,padding:'6px 8px',flexWrap:'wrap',justifyContent:'center',
+        position:'absolute',bottom:'17vh',left:'50%',transform:'translateX(-50%)',
+        zIndex:25,display:'flex',gap:6,background:'rgba(0,0,0,0.75)',backdropFilter:'blur(12px)',
+        border:'1px solid rgba(255,255,255,0.12)',borderRadius:10,padding:'5px 6px',
+        width: '92vw', maxWidth: 360, justifyContent:'space-around',
       }}
     >
       {REGIONS.map(({id,label})=>{
@@ -216,12 +220,15 @@ function ShutterRegionTabs({ active, onChange }: { active: Region; onChange: (r:
             onPointerDown={e => e.stopPropagation()}
             onClick={e=>{ e.stopPropagation(); onChange(id); }}
             style={{
+              flex: 1,
               background:isA?t.accentDim:'transparent',
               border:`1px solid ${isA?t.accent:'rgba(255,255,255,0.15)'}`,
-              borderRadius:6,padding:'5px 12px',fontFamily:'Work Sans,sans-serif',
-              fontSize:11,fontWeight:isA?700:500,color:isA?t.accent:'rgba(255,255,255,0.55)',
-              cursor:'pointer',transition:'all 0.2s',letterSpacing:'0.06em',textTransform:'uppercase',
+              borderRadius:6,padding:'6px 4px',fontFamily:'Work Sans,sans-serif',
+              fontSize:'clamp(9.5px, 2.5vw, 11px)',fontWeight:isA?700:500,color:isA?t.accent:'rgba(255,255,255,0.55)',
+              cursor:'pointer',transition:'all 0.2s',letterSpacing:'0.04em',textTransform:'uppercase',
               boxShadow:isA?`0 0 8px ${t.accentDim}`:'none',
+              textAlign: 'center',
+              whiteSpace: 'nowrap',
             }}
           >
             {label}
@@ -234,21 +241,19 @@ function ShutterRegionTabs({ active, onChange }: { active: Region; onChange: (r:
 
 // ── DRAG HANDLE BAR ───────────────────────────────────────────────────────────
 function DragHandle({ accent, progress }: { accent: string; progress: number }) {
-  // progress 0 = at rest, 1 = fully dragged to threshold
-  const glowAlpha = 0.3 + progress * 0.5;
   return (
     <div style={{
-      position:'absolute', bottom:'8%', left:'50%', transform:'translateX(-50%)',
-      zIndex:30, display:'flex', flexDirection:'column', alignItems:'center', gap:8,
-      pointerEvents:'none', userSelect:'none',
+      position:'absolute', bottom:'3vh', left:'50%', transform:'translateX(-50%)',
+      zIndex:30, display:'flex', flexDirection:'column', alignItems:'center', gap:4,
+      pointerEvents:'none', userSelect:'none', width: '92vw', textAlign: 'center',
     }}>
-      {/* Up arrows — stack of 3, fade in with progress */}
-      <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:3,opacity:0.5+progress*0.5}}>
+      {/* Up arrows */}
+      <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:2,opacity:0.5+progress*0.5,marginBottom:2}}>
         {[0.4,0.65,0.9].map((op,i)=>(
           <div key={i} style={{
             width:0,height:0,
-            borderLeft:'7px solid transparent',borderRight:'7px solid transparent',
-            borderBottom:`9px solid ${accent}`,opacity:op,
+            borderLeft:'6px solid transparent',borderRight:'6px solid transparent',
+            borderBottom:`8px solid ${accent}`,opacity:op,
             animation:`shutter-hint-bob ${1.8+i*0.2}s ease-in-out infinite`,
             animationDelay:`${i*0.12}s`,
           }}/>
@@ -256,30 +261,31 @@ function DragHandle({ accent, progress }: { accent: string; progress: number }) 
       </div>
       {/* Handle pill */}
       <div style={{
-        width:64, height:5, borderRadius:3,
+        width:56, height:4, borderRadius:2,
         background: accent,
         opacity: 0.5 + progress * 0.45,
         boxShadow: `0 0 ${8+progress*16}px ${accent}`,
         transition: 'box-shadow 0.1s, opacity 0.1s',
       }}/>
       <div style={{
-        fontFamily:'Work Sans,sans-serif',fontSize:10,
-        color:'rgba(255,255,255,0.45)',letterSpacing:'0.14em',
+        fontFamily:'Work Sans,sans-serif',fontSize:'clamp(9px, 2.4vw, 10px)',
+        color:'rgba(255,255,255,0.45)',letterSpacing:'0.12em',
         textTransform:'uppercase',
         animation:'shutter-hint-bob 2.4s ease-in-out infinite',
         opacity: 1 - progress * 0.8,
+        marginTop: 2,
       }}>
         drag up to open
       </div>
       <div style={{
-        fontFamily: 'Work Sans, sans-serif', fontSize: 10,
-        color: 'rgba(255,255,255,0.42)', letterSpacing: '0.06em',
-        marginTop: 2,
+        fontFamily: 'Work Sans, sans-serif', fontSize: 'clamp(9px, 2.4vw, 10px)',
+        color: 'rgba(255,255,255,0.42)', letterSpacing: '0.04em',
+        marginTop: 1,
       }}>
         Made with ❤️ by Parardha Dhar
       </div>
       <div style={{
-        fontFamily: 'Work Sans, sans-serif', fontSize: 8.5,
+        fontFamily: 'Work Sans, sans-serif', fontSize: 'clamp(7.5px, 2vw, 8.5px)',
         color: 'rgba(255,255,255,0.28)', letterSpacing: '0.02em',
         marginTop: 1,
       }}>

@@ -561,10 +561,36 @@ button, a {
 
   /* Diegetic Scene Bubble positioning on mobile */
   .scene-bubble-container {
-    top: 25% !important;
+    top: 18% !important;
     right: 4% !important;
-    max-width: 150px !important;
+    max-width: 170px !important;
     font-size: 11px !important;
-    padding: 7px 11px !important;
+    padding: 6px 12px !important;
+  }
+
+  /* Toast comment positioning on mobile */
+  .toast-comment {
+    font-size: 11px !important;
+    padding: 8px 12px !important;
+    max-width: 82vw !important;
+  }
+}
+
+/* ==========================================
+   SHORT SCREEN / LANDSCAPE RESPONSIVENESS
+   ========================================== */
+
+@media (max-height: 700px) {
+  .player-card-widget {
+    padding: 8px 12px !important;
+    gap: 6px !important;
+  }
+
+  .header-bar {
+    padding: 4px 10px !important;
+  }
+
+  .detached-barber-pole {
+    display: none !important;
   }
 }
