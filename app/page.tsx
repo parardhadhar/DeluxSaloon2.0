@@ -776,9 +776,11 @@ export default function Home() {
           {/* ── TICKER ── */}
           <NowPlayingTicker history={history} prefix={ui.tickerPrefix} fontClass={ui.fontClass} />
 
-          {/* ── KEYBOARD HINTS ── */}
-          <div className={ui.fontClass} style={{ textAlign: 'center', padding: '3px', fontSize: '9px', color: 'var(--border)', flexShrink: 0 }}>
-            {ui.keyboardHint}
+          {/* ── KEYBOARD HINTS & CREDIT ── */}
+          <div style={{ textAlign: 'center', padding: '4px', fontSize: '10px', color: 'var(--muted)', flexShrink: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            <span className={ui.fontClass}>{ui.keyboardHint}</span>
+            <span style={{ opacity: 0.5 }}>·</span>
+            <span style={{ color: 'var(--accent-brass)', fontWeight: 600 }}>Made with ❤️ by Parardha Dhar</span>
           </div>
         </main>
       )}

@@ -271,6 +271,13 @@ function DragHandle({ accent, progress }: { accent: string; progress: number }) 
       }}>
         drag up to open
       </div>
+      <div style={{
+        fontFamily: 'Work Sans, sans-serif', fontSize: 10,
+        color: 'rgba(255,255,255,0.42)', letterSpacing: '0.06em',
+        marginTop: 2,
+      }}>
+        Made with ❤️ by Parardha Dhar
+      </div>
     </div>
   );
 }

@@ -35,4 +35,4 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 - [Open-Meteo API](https://open-meteo.com/) (Live Weather)
 
 ---
-*Created with ❤️ for retro Indian saloon culture.*
+*Made with ❤️ by Parardha Dhar for retro Indian saloon culture.*
