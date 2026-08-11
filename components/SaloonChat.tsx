@@ -46,38 +46,47 @@ export default function SaloonChat({ currentRegion, listenerCount }: SaloonChatP
       {/* ── Floating Chat Button (Bottom Right) ── */}
       {!isOpen && (
         <button
+          id="saloon-live-chat-toggle"
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 z-50 flex items-center gap-2"
           style={{
-            background: 'rgba(23, 27, 22, 0.92)',
+            position: 'fixed',
+            bottom: '24px',
+            right: '24px',
+            zIndex: 99999,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            background: 'rgba(23, 27, 22, 0.96)',
             border: '2px solid var(--accent-brass)',
-            borderRadius: '24px',
-            padding: '10px 18px',
+            borderRadius: '30px',
+            padding: '12px 22px',
             color: 'var(--accent-brass)',
             fontFamily: 'Work Sans, sans-serif',
-            fontSize: '13px',
-            fontWeight: 600,
-            boxShadow: '0 8px 32px rgba(0,0,0,0.7), 0 0 16px rgba(201,162,39,0.25)',
-            backdropFilter: 'blur(10px)',
+            fontSize: '14px',
+            fontWeight: 700,
+            boxShadow: '0 8px 32px rgba(0,0,0,0.85), 0 0 20px rgba(201,162,39,0.4)',
+            backdropFilter: 'blur(12px)',
             cursor: 'pointer',
             transition: 'transform 0.2s ease, box-shadow 0.2s ease',
           }}
           onMouseEnter={e => {
-            (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1.05) translateY(-2px)';
+            (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1.08) translateY(-2px)';
+            (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 12px 36px rgba(0,0,0,0.9), 0 0 28px rgba(201,162,39,0.6)';
           }}
           onMouseLeave={e => {
             (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1) translateY(0)';
+            (e.currentTarget as HTMLButtonElement).style.boxShadow = '0 8px 32px rgba(0,0,0,0.85), 0 0 20px rgba(201,162,39,0.4)';
           }}
         >
-          <span style={{ fontSize: '16px' }}>💬</span>
+          <span style={{ fontSize: '18px' }}>💬</span>
           <span>Live Chat</span>
           <span
             style={{
-              width: 8,
-              height: 8,
+              width: 9,
+              height: 9,
               borderRadius: '50%',
               background: '#4caf50',
-              boxShadow: '0 0 8px #4caf50',
+              boxShadow: '0 0 10px #4caf50',
               display: 'inline-block',
               marginLeft: '2px',
             }}
@@ -88,17 +97,20 @@ export default function SaloonChat({ currentRegion, listenerCount }: SaloonChatP
       {/* ── Slide-out Chat Window ── */}
       {isOpen && (
         <div
-          className="fixed z-50 flex flex-col"
           style={{
+            position: 'fixed',
             bottom: '24px',
             right: '24px',
+            zIndex: 99999,
+            display: 'flex',
+            flexDirection: 'column',
             width: 'clamp(300px, 90vw, 360px)',
             height: 'clamp(400px, 75vh, 520px)',
-            background: 'rgba(20, 24, 19, 0.95)',
+            background: 'rgba(20, 24, 19, 0.96)',
             border: '2px solid var(--accent-brass)',
             borderRadius: '16px',
-            boxShadow: '0 16px 48px rgba(0,0,0,0.85), 0 0 24px rgba(201,162,39,0.2)',
-            backdropFilter: 'blur(16px)',
+            boxShadow: '0 20px 60px rgba(0,0,0,0.9), 0 0 28px rgba(201,162,39,0.3)',
+            backdropFilter: 'blur(20px)',
             overflow: 'hidden',
             animation: 'fadeIn 0.25s ease-out',
           }}
