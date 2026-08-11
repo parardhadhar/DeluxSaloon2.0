@@ -1,0 +1,570 @@
+@import url('https://fonts.googleapis.com/css2?family=Rozha+One&family=Work+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #171b16;
+  --surface: #232a20;
+  --surface-2: #2c3428;
+  --accent-brass: #c9a227;
+  --accent-poster: #b33a3a;
+  --text: #eae6da;
+  --muted: #8a8f83;
+  --border: #3a4237;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'Work Sans', sans-serif;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Work Sans', sans-serif;
+  overflow-x: hidden;
+  /* Retro scissor cursor! */
+  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23c9a227" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>') 12 12, auto;
+}
+
+/* Make buttons use pointer or a specific grab cursor */
+button, a {
+  cursor: pointer;
+}
+
+#__next, main {
+  height: 100%;
+}
+
+/* ==========================================
+   BARBER POLE
+   ========================================== */
+
+@keyframes barber-spin {
+  from { background-position: 0 0; }
+  to   { background-position: 0 -200px; }
+}
+
+.barber-pole {
+  width: 80px;
+  height: 260px;
+  border-radius: 40px;
+  border: 4px solid var(--accent-brass);
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 2px #000,
+    inset 0 0 12px rgba(0,0,0,0.4),
+    0 8px 32px rgba(0,0,0,0.6),
+    0 0 60px rgba(201,162,39,0.12);
+}
+
+.barber-pole-stripes {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    #c8102e 0px,
+    #c8102e 20px,
+    #ffffff 20px,
+    #ffffff 40px,
+    #003087 40px,
+    #003087 60px,
+    #ffffff 60px,
+    #ffffff 80px
+  );
+  background-size: 100% 200px;
+  animation: barber-spin 3s linear infinite;
+}
+
+.barber-pole-stripes.paused {
+  animation-play-state: paused;
+}
+
+.barber-pole-cap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 28px;
+  background: var(--accent-brass);
+  z-index: 2;
+}
+
+.barber-pole-cap.top {
+  top: 0;
+  border-radius: 36px 36px 0 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.barber-pole-cap.bottom {
+  bottom: 0;
+  border-radius: 0 0 36px 36px;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.4);
+}
+
+.barber-pole-shine {
+  position: absolute;
+  top: 0;
+  left: 12px;
+  width: 12px;
+  bottom: 0;
+  background: linear-gradient(to right, transparent, rgba(255,255,255,0.15), transparent);
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* ==========================================
+   BUBBLE IN/OUT (SceneBubble)
+   ========================================== */
+
+@keyframes bubble-in-out {
+  0%   { opacity: 0; transform: scale(0.7) translateY(8px); }
+  10%  { opacity: 1; transform: scale(1.05) translateY(0); }
+  15%  { transform: scale(1); }
+  80%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.9) translateY(-6px); }
+}
+
+/* ==========================================
+   FADE IN (player screen entrance)
+   ========================================== */
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ==========================================
+   TICKER
+   ========================================== */
+
+@keyframes ticker-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.ticker-track {
+  display: flex;
+  white-space: nowrap;
+  animation: ticker-scroll 30s linear infinite;
+}
+
+.ticker-track:hover {
+  animation-play-state: paused;
+}
+
+/* ==========================================
+   SHUTTER TRANSITION
+   ========================================== */
+
+@keyframes shutter-close {
+  0%   { transform: scaleY(0); }
+  100% { transform: scaleY(1); }
+}
+
+@keyframes shutter-open {
+  0%   { transform: scaleY(1); }
+  100% { transform: scaleY(0); }
+}
+
+.shutter {
+  position: fixed;
+  inset: 0;
+  background: #0f110f;
+  z-index: 15;
+  transform-origin: top;
+  pointer-events: none;
+  transform: scaleY(0);
+}
+
+.shutter.closing {
+  animation: shutter-close 0.4s cubic-bezier(0.8, 0, 0.2, 1) forwards;
+}
+
+.shutter.opening {
+  animation: shutter-open 0.4s cubic-bezier(0.8, 0, 0.2, 1) forwards;
+  transform-origin: bottom;
+}
+
+/* Shop Shutter — hint bob + spin */
+@keyframes shutter-hint-bob {
+  0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.5; }
+  50%       { transform: translateX(-50%) translateY(-8px); opacity: 0.9; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ==========================================
+   TOAST
+   ========================================== */
+
+@keyframes toast-in-out {
+  0%   { opacity: 0; transform: translateY(8px) rotate(-1deg); }
+  15%  { opacity: 1; transform: translateY(0) rotate(-1deg); }
+  80%  { opacity: 1; transform: translateY(0) rotate(-1deg); }
+  100% { opacity: 0; transform: translateY(-4px) rotate(-1deg); }
+}
+
+.toast-comment {
+  animation: toast-in-out 4s ease forwards;
+  font-family: 'Work Sans', sans-serif;
+  font-style: italic;
+  transform-origin: left center;
+}
+
+/* ==========================================
+   PROGRESS BAR
+   ========================================== */
+
+.progress-bar-track {
+  position: relative;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  cursor: pointer;
+  flex: 1;
+}
+
+.progress-bar-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: var(--accent-brass);
+  border-radius: 2px;
+  pointer-events: none;
+  transition: width 0.1s linear;
+}
+
+.progress-bar-thumb {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  background: var(--accent-brass);
+  border-radius: 50%;
+  pointer-events: none;
+  box-shadow: 0 0 6px rgba(201, 162, 39, 0.6);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.progress-bar-track:hover .progress-bar-thumb {
+  opacity: 1;
+}
+
+/* ==========================================
+   REGION TABS
+   ========================================== */
+
+.region-tab {
+  padding: 4px 6px;
+  border-radius: 4px;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+  color: var(--muted);
+  background: transparent;
+}
+
+.region-tab:hover {
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.region-tab.active {
+  background: var(--surface-2);
+  border-color: var(--border);
+  border-bottom-color: var(--accent-poster);
+  color: var(--text);
+  box-shadow: inset 0 -2px 0 var(--accent-poster);
+}
+
+/* ==========================================
+   SKIP BUTTON
+   ========================================== */
+
+.skip-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  font-family: 'Work Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.skip-btn:hover {
+  border-color: var(--accent-poster);
+  color: var(--accent-poster);
+  background: rgba(179, 58, 58, 0.08);
+}
+
+.skip-btn.voted {
+  border-color: var(--accent-poster);
+  color: var(--accent-poster);
+  background: rgba(179, 58, 58, 0.12);
+}
+
+/* ==========================================
+   STAGGERED ENTRANCE & POLISH ANIMATIONS
+   ========================================== */
+
+@keyframes card-scale-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.96) translateY(16px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes stagger-fade-slide {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.splash-card-container {
+  animation: card-scale-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.stagger-1 { animation: stagger-fade-slide 0.38s ease-out 0.08s both; }
+.stagger-2 { animation: stagger-fade-slide 0.38s ease-out 0.16s both; }
+.stagger-3 { animation: stagger-fade-slide 0.38s ease-out 0.24s both; }
+.stagger-4 { animation: stagger-fade-slide 0.38s ease-out 0.32s both; }
+.stagger-5 { animation: stagger-fade-slide 0.38s ease-out 0.40s both; }
+.stagger-6 { animation: stagger-fade-slide 0.38s ease-out 0.48s both; }
+
+/* LIVE dot pulse animation */
+@keyframes live-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 6px #4caf50;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.45;
+    box-shadow: 0 0 12px #4caf50;
+  }
+}
+
+.live-dot-pulse {
+  animation: live-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(201, 162, 39, 0.4); }
+  50%       { box-shadow: 0 0 0 16px rgba(201, 162, 39, 0); }
+}
+
+.open-shop-btn {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s, box-shadow 0.2s;
+  animation: pulse-glow 2.5s ease-in-out infinite;
+}
+
+.open-shop-btn:hover {
+  transform: scale(1.03) translateY(-1px) !important;
+  background-color: #d8b237 !important;
+  box-shadow: 0 8px 24px rgba(201, 162, 39, 0.45) !important;
+}
+
+.open-shop-btn:active {
+  transform: scale(0.98) translateY(1px) !important;
+  box-shadow: 0 2px 8px rgba(201, 162, 39, 0.3) !important;
+}
+
+/* ==========================================
+   CARD / SURFACE
+   ========================================== */
+
+.surface-card {
+  background: rgba(35, 42, 32, 0.88);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* ==========================================
+   SCROLLBAR
+   ========================================== */
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+
+/* ==========================================
+   UTILITIES
+   ========================================== */
+
+.font-display {
+  font-family: 'Rozha One', serif;
+}
+
+.font-devanagari {
+  font-family: 'Noto Serif Devanagari', 'Rozha One', serif;
+}
+
+.font-tamil {
+  font-family: 'Noto Serif Tamil', serif;
+}
+
+.font-bengali {
+  font-family: 'Noto Serif Bengali', serif;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.font-body {
+  font-family: 'Work Sans', sans-serif;
+}
+
+.text-brass { color: var(--accent-brass); }
+.text-poster { color: var(--accent-poster); }
+.text-muted  { color: var(--muted); }
+.text-cream  { color: var(--text); }
+
+.bg-surface { background: var(--surface); }
+.bg-surface-2 { background: var(--surface-2); }
+.border-subtle { border-color: var(--border); }
+
+/* Chalkboard underline for ticker items */
+.chalk-item::after {
+  content: '';
+  display: block;
+  height: 1px;
+  background: var(--muted);
+  opacity: 0.4;
+  margin-top: 1px;
+  transform: rotate(-0.3deg);
+}
+
+/* ==========================================
+   MOBILE & TABLET RESPONSIVE MEDIA QUERIES
+   ========================================== */
+
+@media (max-width: 640px) {
+  /* Splash screen container adjustments */
+  .splash-card {
+    flex-direction: column !important;
+    gap: 16px !important;
+    padding: 20px 18px !important;
+    max-width: 94vw !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    text-align: center !important;
+  }
+
+  .splash-card #open-shop-btn {
+    align-self: center !important;
+    width: 100% !important;
+  }
+
+  /* Player header bar */
+  .header-bar {
+    padding: 6px 12px !important;
+    gap: 6px !important;
+  }
+
+  .header-title {
+    font-size: 13px !important;
+  }
+
+  .header-badge {
+    padding: 4px 8px !important;
+    font-size: 10px !important;
+  }
+
+  /* Player Bottom Layout */
+  .player-bottom-container {
+    padding: 0 10px 12px 10px !important;
+    justify-content: center !important;
+  }
+
+  .player-row {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  .detached-barber-pole {
+    display: none !important; /* Hide pole on small screens to give full focus to player card */
+  }
+
+  .player-card-widget {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 12px !important;
+    gap: 8px !important;
+  }
+
+  .region-tabs-container {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+
+  .region-tab {
+    flex: 1;
+    text-align: center;
+    padding: 6px 4px !important;
+    font-size: 9px !important;
+  }
+
+  /* Diegetic Scene Bubble positioning on mobile */
+  .scene-bubble-container {
+    top: 25% !important;
+    right: 4% !important;
+    max-width: 150px !important;
+    font-size: 11px !important;
+    padding: 7px 11px !important;
+  }
+}
