@@ -40,9 +40,9 @@ const DEFAULT_MESSAGES: ChatMessage[] = [
   { id: 'init-4', sender: 'Chennai Machan #99', region: 'chennai', text: 'Semma song brother! 💈', timestamp: '12:05 PM' },
 ];
 
-// Supabase Realtime client (optional zero-config live backend across all devices)
+// Supabase Realtime client (live multi-user backend across all devices)
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || '';
 
 const supabase = (SUPABASE_URL && SUPABASE_ANON_KEY)
   ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
