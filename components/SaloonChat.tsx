@@ -17,7 +17,7 @@ export default function SaloonChat({ currentRegion, listenerCount }: SaloonChatP
   const [inputText, setInputText] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { messages, handle, sendMessage, isRealtimeConnected } = useLiveChat(currentRegion);
+  const { messages, handle, sendMessage, spamError, isRealtimeConnected } = useLiveChat(currentRegion);
 
   const filteredMessages = messages.filter(
     m => selectedFilter === 'all' || m.region === selectedFilter
@@ -360,6 +360,25 @@ export default function SaloonChat({ currentRegion, listenerCount }: SaloonChatP
               </button>
             ))}
           </div>
+
+          {/* Anti-Spam Warning Notice */}
+          {spamError && (
+            <div
+              style={{
+                padding: '6px 12px',
+                background: 'rgba(235, 77, 75, 0.18)',
+                borderTop: '1px solid rgba(235, 77, 75, 0.4)',
+                color: '#ff6b6b',
+                fontSize: '11px',
+                fontFamily: 'Work Sans, sans-serif',
+                fontWeight: 600,
+                textAlign: 'center',
+                animation: 'fadeIn 0.2s ease',
+              }}
+            >
+              ⚠️ {spamError}
+            </div>
+          )}
 
           {/* Input Form */}
           <form

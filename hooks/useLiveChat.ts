@@ -48,6 +48,66 @@ const supabase = (SUPABASE_URL && SUPABASE_ANON_KEY)
   ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
   : null;
 
+// ── PROFANITY FILTER & ANTI-SPAM ─────────────────────────────────────────────
+// Specific words blacklisted for star-masking. Uses \b word boundaries so normal words aren't affected.
+const BLACKLIST_SINGLE_WORDS: string[] = [
+  // English
+  'fuck', 'fucker', 'fucking', 'fucks', 'fuk', 'fukin', 'f**k', 'f*ck',
+  'shit', 'shitting', 'shitty', 'sh*t',
+  'bitch', 'bitches', 'b*tch',
+  'asshole', 'arsehole', 'a**hole',
+  'bastard',
+  'cunt',
+  'dick', 'dicks',
+  'cock', 'cocks',
+  'pussy',
+  'whore',
+  'slut',
+  'nigga', 'nigger',
+  'retard',
+  'motherfucker',
+  // Hindi / Hinglish
+  'madarchod', 'madarchood', 'mdc',
+  'bhenchod', 'bhnc',
+  'chutiya', 'chutiye', 'chut',
+  'gaandu', 'gandu', 'gaand',
+  'loda', 'lund', 'lauda', 'lawda',
+  'randi', 'raand',
+  'harami',
+  'kamina', 'kamini',
+  'haramzada', 'haramzadi',
+  'suar', 'suwar',
+  'jhaat',
+  'tatti',
+  'chudna', 'chudai', 'chodna', 'chodai',
+  // Tamil / Bengali
+  'otha', 'oombu', 'punda', 'thevadiya', 'koothi',
+  'bokachoda', 'khankir',
+];
+
+const MULTI_WORD_SLANG: string[] = [
+  'bhen chod', 'son of a bitch', 'mother fucker', 'mother-fucker',
+];
+
+// Build regex matching whole words or multi-word slangs safely
+const PROFANITY_REGEX = new RegExp(
+  '(' +
+  MULTI_WORD_SLANG.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') +
+  '|\\b(' +
+  BLACKLIST_SINGLE_WORDS.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') +
+  ')\\b)',
+  'gi'
+);
+
+function maskWord(word: string): string {
+  if (word.length <= 2) return '*'.repeat(word.length);
+  return word[0] + '*'.repeat(word.length - 2) + word[word.length - 1];
+}
+
+export function filterProfanity(text: string): string {
+  return text.replace(PROFANITY_REGEX, (match) => maskWord(match));
+}
+
 export function useLiveChat(currentRegion: Region) {
   const [messages, setMessages] = useState<ChatMessage[]>(() => {
     if (typeof window === 'undefined') return DEFAULT_MESSAGES;
@@ -59,8 +119,15 @@ export function useLiveChat(currentRegion: Region) {
   });
 
   const [handle, setHandle] = useState<string>('Radio Fan #01');
+  const [spamError, setSpamError] = useState<string | null>(null);
+
   const broadcastChannelRef = useRef<BroadcastChannel | null>(null);
   const supabaseChannelRef = useRef<any>(null);
+
+  // Anti-spam trackers
+  const lastSentTimeRef = useRef<number>(0);
+  const lastSentTextRef = useRef<string>('');
+  const messageTimestampsRef = useRef<number[]>([]);
 
   useEffect(() => {
     setHandle(getAnonymousHandle(currentRegion));
@@ -82,9 +149,10 @@ export function useLiveChat(currentRegion: Region) {
       broadcastChannelRef.current = bc;
       bc.onmessage = (event: MessageEvent<ChatMessage>) => {
         if (event.data && event.data.id) {
+          const filtered = { ...event.data, text: filterProfanity(event.data.text) };
           setMessages(prev => {
-            if (prev.some(m => m.id === event.data.id)) return prev;
-            return [...prev, event.data].slice(-50);
+            if (prev.some(m => m.id === filtered.id)) return prev;
+            return [...prev, filtered].slice(-50);
           });
         }
       };
@@ -97,9 +165,10 @@ export function useLiveChat(currentRegion: Region) {
 
       channel.on('broadcast', { event: 'new_chat_msg' }, ({ payload }: { payload: ChatMessage }) => {
         if (payload && payload.id) {
+          const filtered = { ...payload, text: filterProfanity(payload.text), isSelf: false };
           setMessages(prev => {
-            if (prev.some(m => m.id === payload.id)) return prev;
-            return [...prev, { ...payload, isSelf: false }].slice(-50);
+            if (prev.some(m => m.id === filtered.id)) return prev;
+            return [...prev, filtered].slice(-50);
           });
         }
       }).subscribe();
@@ -118,14 +187,46 @@ export function useLiveChat(currentRegion: Region) {
     const trimmed = text.trim();
     if (!trimmed) return;
 
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const now = Date.now();
+
+    // ── Anti-Spam Protection Rules ──
+    // Rule 1: Minimum 1.5 seconds between messages
+    if (now - lastSentTimeRef.current < 1500) {
+      setSpamError('Please wait 1.5 seconds before sending another message.');
+      setTimeout(() => setSpamError(null), 2500);
+      return;
+    }
+
+    // Rule 2: Duplicate message prevention (within 10 seconds)
+    if (trimmed.toLowerCase() === lastSentTextRef.current.toLowerCase() && (now - lastSentTimeRef.current < 10000)) {
+      setSpamError('Duplicate message blocked. Try sending something different!');
+      setTimeout(() => setSpamError(null), 2500);
+      return;
+    }
+
+    // Rule 3: Burst rate limit (max 5 messages per 10 seconds)
+    const recent = messageTimestampsRef.current.filter(t => now - t < 10000);
+    if (recent.length >= 5) {
+      setSpamError('Sending too fast! Please slow down.');
+      setTimeout(() => setSpamError(null), 3500);
+      return;
+    }
+
+    // Record message dispatch timestamp & text
+    lastSentTimeRef.current = now;
+    lastSentTextRef.current = trimmed;
+    messageTimestampsRef.current = [...recent, now];
+    setSpamError(null);
+
+    const nowObj = new Date();
+    const timeStr = nowObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const filteredText = filterProfanity(trimmed);
 
     const newMsg: ChatMessage = {
-      id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
+      id: `msg-${now}-${Math.random().toString(36).substr(2, 4)}`,
       sender: handle,
       region: regionOverride || currentRegion,
-      text: trimmed,
+      text: filteredText,
       timestamp: timeStr,
       isSelf: true,
     };
@@ -153,6 +254,8 @@ export function useLiveChat(currentRegion: Region) {
     messages,
     handle,
     sendMessage,
+    spamError,
     isRealtimeConnected: !!supabase,
   };
 }
+
