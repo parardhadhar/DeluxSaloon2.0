@@ -140,213 +140,23 @@ function ShutterSVG({ region }: { region: Region }) {
   );
 }
 
-// ── SHOP SIGN ─────────────────────────────────────────────────────────────────
-function ShopSign({ region, weather, loading }: { region: Region; weather: {icon:string;temp:string;condition:string}; loading: boolean }) {
-  const t = THEMES[region];
-  return (
-    <div style={{
-      position:'absolute', top:'6vh', left:'50%', transform:'translateX(-50%)',
-      zIndex:20, display:'flex', flexDirection:'column', alignItems:'center', pointerEvents:'none',
-      width: '92vw', maxWidth: 380,
-    }}>
-      {/* Chain links */}
-      <div style={{display:'flex',gap:22,marginBottom:2}}>
-        {[0,1,2].map(i=>(
-          <div key={i} style={{display:'flex',flexDirection:'column',alignItems:'center',gap:2}}>
-            {[0,1,2].map(j=>(
-              <div key={j} style={{width:3,height:6,borderRadius:3,background:'#777',boxShadow:'0 1px 3px rgba(0,0,0,0.7)',border:'1px solid #555'}}/>
-            ))}
-          </div>
-        ))}
-      </div>
-      <div style={{
-        background: t.signBg, border:`3px solid ${t.signBorder}`, borderRadius:14,
-        padding:'14px 20px 12px', textAlign:'center',
-        boxShadow:`0 14px 48px rgba(0,0,0,0.85), inset 0 2px 0 rgba(255,255,255,0.08)`,
-        width: '100%',
-      }}>
-        <div style={{fontSize:'clamp(22px, 5vw, 28px)',marginBottom:4,animation:'spin 2s linear infinite',display:'inline-block'}}>💈</div>
-        <div style={{fontFamily:'Georgia,serif',fontSize:'clamp(18px, 4.5vw, 26px)',fontWeight:700,
-          color:t.signBorder,letterSpacing:'0.03em',textShadow:'0 2px 12px rgba(0,0,0,0.95)',lineHeight:1.2,marginBottom:2}}>
-          {t.signTitle}
-        </div>
-        <div style={{fontFamily:'Work Sans,sans-serif',fontSize:'clamp(8px, 2.2vw, 9px)',color:'rgba(255,255,255,0.45)',
-          letterSpacing:'0.18em',textTransform:'uppercase',marginBottom:8}}>
-          {t.signTitleEn}
-        </div>
-        <div style={{display:'inline-flex',alignItems:'center',gap:5,background:'rgba(0,0,0,0.55)',
-          border:`1px solid ${t.signBorder}`,borderRadius:6,padding:'4px 14px',marginBottom:8}}>
-          <span style={{width:6,height:6,borderRadius:'50%',background:'#ff4444',display:'inline-block',boxShadow:'0 0 6px #ff4444'}}/>
-          <span style={{fontFamily:'JetBrains Mono,monospace',fontSize:'clamp(11px, 3vw, 13px)',fontWeight:700,color:t.signBorder,letterSpacing:'0.18em'}}>
-            {t.closedWord}
-          </span>
-        </div>
-        {!loading && (
-          <div style={{display:'flex',justifyContent:'center',marginBottom:6}}>
-            <div style={{display:'flex',alignItems:'center',gap:6,background:'rgba(0,0,0,0.45)',
-              border:'1px solid rgba(255,255,255,0.14)',borderRadius:20,padding:'4px 10px',maxWidth:'100%'}}>
-              <span style={{fontSize:14}}>{weather.icon}</span>
-              <span style={{fontFamily:'JetBrains Mono,monospace',fontSize:'clamp(11px, 2.8vw, 12px)',fontWeight:700,color:'#fff'}}>{weather.temp}</span>
-              <span style={{fontFamily:'Work Sans,sans-serif',fontSize:'clamp(9px, 2.4vw, 10px)',color:'rgba(255,255,255,0.6)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{weather.condition}</span>
-            </div>
-          </div>
-        )}
-        <div style={{fontFamily:'Work Sans,sans-serif',fontSize:'clamp(9.5px, 2.5vw, 11px)',color:'rgba(255,255,255,0.35)',fontStyle:'italic'}}>
-          {t.tagline}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ── REGION TABS ───────────────────────────────────────────────────────────────
-function ShutterRegionTabs({ active, onChange }: { active: Region; onChange: (r: Region) => void }) {
-  return (
-    <div
-      className="no-drag"
-      onPointerDown={e => e.stopPropagation()}
-      style={{
-        position:'absolute',bottom:'17vh',left:'50%',transform:'translateX(-50%)',
-        zIndex:25,display:'flex',gap:6,background:'rgba(0,0,0,0.75)',backdropFilter:'blur(12px)',
-        border:'1px solid rgba(255,255,255,0.12)',borderRadius:10,padding:'5px 6px',
-        width: '92vw', maxWidth: 360, justifyContent:'space-around',
-      }}
-    >
-      {REGIONS.map(({id,label})=>{
-        const isA=id===active; const t=THEMES[id];
-        return (
-          <button
-            key={id}
-            onPointerDown={e => e.stopPropagation()}
-            onClick={e=>{ e.stopPropagation(); onChange(id); }}
-            style={{
-              flex: 1,
-              background:isA?t.accentDim:'transparent',
-              border:`1px solid ${isA?t.accent:'rgba(255,255,255,0.15)'}`,
-              borderRadius:6,padding:'6px 4px',fontFamily:'Work Sans,sans-serif',
-              fontSize:'clamp(9.5px, 2.5vw, 11px)',fontWeight:isA?700:500,color:isA?t.accent:'rgba(255,255,255,0.55)',
-              cursor:'pointer',transition:'all 0.2s',letterSpacing:'0.04em',textTransform:'uppercase',
-              boxShadow:isA?`0 0 8px ${t.accentDim}`:'none',
-              textAlign: 'center',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {label}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-// ── DRAG HANDLE BAR ───────────────────────────────────────────────────────────
-function DragHandle({ accent, progress, onOpen }: { accent: string; progress: number; onOpen: () => void }) {
-  return (
-    <div style={{
-      position:'absolute', bottom:'2.5vh', left:'50%', transform:'translateX(-50%)',
-      zIndex:30, display:'flex', flexDirection:'column', alignItems:'center', gap:4,
-      userSelect:'none', width: '92vw', textAlign: 'center',
-    }}>
-      {/* Prominent CLICK TO START MUSIC Button */}
-      <button
-        onClick={(e) => { e.stopPropagation(); onOpen(); }}
-        style={{
-          background: accent,
-          color: '#171b16',
-          border: 'none',
-          borderRadius: '30px',
-          padding: '10px 22px',
-          fontFamily: 'Work Sans, sans-serif',
-          fontSize: 'clamp(11px, 3vw, 13px)',
-          fontWeight: 800,
-          letterSpacing: '0.08em',
-          textTransform: 'uppercase',
-          cursor: 'pointer',
-          boxShadow: `0 6px 24px ${accent}88`,
-          pointerEvents: 'auto',
-          marginBottom: 4,
-          transition: 'transform 0.15s ease, boxShadow 0.15s ease',
-        }}
-        onMouseEnter={e => {
-          (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1.05)';
-        }}
-        onMouseLeave={e => {
-          (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)';
-        }}
-      >
-        ▶ CLICK TO START MUSIC
-      </button>
-
-      {/* Up arrows */}
-      <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:2,opacity:0.5+progress*0.5,marginBottom:2,pointerEvents:'none'}}>
-        {[0.4,0.65,0.9].map((op,i)=>(
-          <div key={i} style={{
-            width:0,height:0,
-            borderLeft:'6px solid transparent',borderRight:'6px solid transparent',
-            borderBottom:`8px solid ${accent}`,opacity:op,
-            animation:`shutter-hint-bob ${1.8+i*0.2}s ease-in-out infinite`,
-            animationDelay:`${i*0.12}s`,
-          }}/>
-        ))}
-      </div>
-      {/* Handle pill */}
-      <div style={{
-        width:56, height:4, borderRadius:2,
-        background: accent,
-        opacity: 0.5 + progress * 0.45,
-        boxShadow: `0 0 ${8+progress*16}px ${accent}`,
-        transition: 'box-shadow 0.1s, opacity 0.1s',
-        pointerEvents: 'none',
-      }}/>
-      <div style={{
-        fontFamily:'Work Sans,sans-serif',fontSize:'clamp(9px, 2.4vw, 10px)',
-        color:'rgba(255,255,255,0.55)',letterSpacing:'0.12em',
-        textTransform:'uppercase',
-        opacity: 1 - progress * 0.8,
-        marginTop: 2,
-        pointerEvents: 'none',
-      }}>
-        click anywhere or drag up to open
-      </div>
-      <div style={{
-        fontFamily: 'Work Sans, sans-serif', fontSize: 'clamp(9px, 2.4vw, 10px)',
-        color: 'rgba(255,255,255,0.42)', letterSpacing: '0.04em',
-        marginTop: 1,
-        pointerEvents: 'none',
-      }}>
-        Made with ❤️ by Parardha Dhar
-      </div>
-      <div style={{
-        fontFamily: 'Work Sans, sans-serif', fontSize: 'clamp(7.5px, 2vw, 8.5px)',
-        color: 'rgba(255,255,255,0.28)', letterSpacing: '0.02em',
-        marginTop: 1,
-        pointerEvents: 'none',
-      }}>
-        Streamed via official YouTube Music API · Non-commercial project
-      </div>
-    </div>
-  );
-}
-
 // ── MAIN COMPONENT ────────────────────────────────────────────────────────────
-const DRAG_THRESHOLD = 0.28; // 28% of screen height to trigger open
+const DRAG_THRESHOLD = 0.28;
 
 export default function ShopShutter({ region, onRegionChange, onReveal }: ShopShutterProps) {
   const [completed, setCompleted] = useState(false);
   const [hidden, setHidden] = useState(false);
-  const [dragProgress, setDragProgress] = useState(0); // 0–1 visual indicator
+  const [dragProgress, setDragProgress] = useState(0);
   const { weather, loading } = useWeather(region);
 
-  // Refs — used for direct DOM manipulation during drag (no setState lag)
   const panelRef = useRef<HTMLDivElement>(null);
   const startYRef = useRef<number | null>(null);
-  const currentPctRef = useRef(0); // current lift percent 0–100
+  const currentPctRef = useRef(0);
 
   const t = THEMES[region];
 
   const triggerOpen = useCallback(() => {
     setCompleted(true);
-    // Snap to full open
     if (panelRef.current) {
       panelRef.current.style.transition = 'transform 0.55s cubic-bezier(0.4,0,0.2,1)';
       panelRef.current.style.transform = 'translateY(-100%)';
@@ -366,22 +176,17 @@ export default function ShopShutter({ region, onRegionChange, onReveal }: ShopSh
     currentPctRef.current = 0;
   }, []);
 
-  // ── Pointer (mouse, touch & pen) gesture handlers ──────────────────────────
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (completed) return;
     const target = e.target as HTMLElement;
-    if (target.closest('button') || target.closest('.no-drag')) {
-      return;
-    }
+    if (target.closest('button') || target.closest('.no-drag')) return;
     startYRef.current = e.clientY;
-    try {
-      (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
-    } catch {}
+    try { (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId); } catch {}
   };
 
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
     if (completed || startYRef.current === null) return;
-    const delta = startYRef.current - e.clientY; // positive = dragging up
+    const delta = startYRef.current - e.clientY;
     const pct = Math.max(0, Math.min(100, (delta / window.innerHeight) * 100));
     currentPctRef.current = pct;
     if (panelRef.current) {
@@ -395,11 +200,7 @@ export default function ShopShutter({ region, onRegionChange, onReveal }: ShopSh
     if (completed || startYRef.current === null) return;
     const clickDistance = Math.abs(startYRef.current - e.clientY);
     startYRef.current = null;
-    try {
-      (e.currentTarget as HTMLDivElement).releasePointerCapture(e.pointerId);
-    } catch {}
-
-    // Single click / tap (distance < 10px) OR dragged above threshold => OPEN SHUTTER
+    try { (e.currentTarget as HTMLDivElement).releasePointerCapture(e.pointerId); } catch {}
     if (clickDistance < 10 || currentPctRef.current >= DRAG_THRESHOLD * 100) {
       triggerOpen();
     } else {
@@ -412,7 +213,7 @@ export default function ShopShutter({ region, onRegionChange, onReveal }: ShopSh
   return (
     <div
       style={{
-        position:'fixed', inset:0, zIndex:60, overflow:'hidden',
+        position: 'fixed', inset: 0, zIndex: 60, overflow: 'hidden',
         cursor: completed ? 'default' : 'grab',
         touchAction: 'none',
         userSelect: 'none',
@@ -425,35 +226,189 @@ export default function ShopShutter({ region, onRegionChange, onReveal }: ShopSh
       {/* The shutter panel that slides up */}
       <div
         ref={panelRef}
-        style={{ position:'absolute', inset:0, transform:'translateY(0)', willChange:'transform' }}
+        style={{ position: 'absolute', inset: 0, transform: 'translateY(0)', willChange: 'transform' }}
       >
         <ShutterSVG region={region}/>
       </div>
 
-      {/* UI Elements (sign, tabs, handle) — fade out smoothly when completed */}
+      {/* ── Full-screen flex column layout — no conflicting absolute positioning ── */}
       <div
         style={{
           position: 'absolute', inset: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '5vh 16px 4vh',
           opacity: completed ? 0 : 1,
           transition: 'opacity 0.3s ease',
           pointerEvents: completed ? 'none' : 'auto',
+          // Vignette overlay
+          background: 'radial-gradient(ellipse at center 30%, rgba(0,0,0,0) 15%, rgba(0,0,0,0.65) 100%)',
         }}
       >
-        {/* Vignette behind sign */}
-        <div style={{
-          position:'absolute',inset:0,
-          background:'radial-gradient(ellipse at center 35%,rgba(0,0,0,0) 20%,rgba(0,0,0,0.72) 100%)',
-          pointerEvents:'none',zIndex:10,
-        }}/>
 
-        {/* Shop sign */}
-        <ShopSign region={region} weather={weather} loading={loading}/>
+        {/* ─── TOP: Shop Sign ─── */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', pointerEvents: 'none', width: '100%', maxWidth: 360 }}>
+          {/* Chain links */}
+          <div style={{ display: 'flex', gap: 22, marginBottom: 2 }}>
+            {[0,1,2].map(i => (
+              <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+                {[0,1,2].map(j => (
+                  <div key={j} style={{ width: 3, height: 6, borderRadius: 3, background: '#777', boxShadow: '0 1px 3px rgba(0,0,0,0.7)', border: '1px solid #555' }}/>
+                ))}
+              </div>
+            ))}
+          </div>
+          {/* Sign board */}
+          <div style={{
+            background: t.signBg, border: `3px solid ${t.signBorder}`, borderRadius: 14,
+            padding: '12px 18px 10px', textAlign: 'center',
+            boxShadow: `0 14px 48px rgba(0,0,0,0.85), inset 0 2px 0 rgba(255,255,255,0.08)`,
+            width: '100%',
+          }}>
+            <div style={{ fontSize: 'clamp(20px, 5vw, 26px)', marginBottom: 4, animation: 'spin 2s linear infinite', display: 'inline-block' }}>💈</div>
+            <div style={{ fontFamily: 'Georgia,serif', fontSize: 'clamp(16px, 4.5vw, 26px)', fontWeight: 700,
+              color: t.signBorder, letterSpacing: '0.03em', textShadow: '0 2px 12px rgba(0,0,0,0.95)', lineHeight: 1.2, marginBottom: 2 }}>
+              {t.signTitle}
+            </div>
+            <div style={{ fontFamily: 'Work Sans,sans-serif', fontSize: 'clamp(8px, 2.2vw, 9px)', color: 'rgba(255,255,255,0.45)',
+              letterSpacing: '0.18em', textTransform: 'uppercase', marginBottom: 8 }}>
+              {t.signTitleEn}
+            </div>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: 'rgba(0,0,0,0.55)',
+              border: `1px solid ${t.signBorder}`, borderRadius: 6, padding: '4px 14px', marginBottom: 8 }}>
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#ff4444', display: 'inline-block', boxShadow: '0 0 6px #ff4444' }}/>
+              <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: 'clamp(11px, 3vw, 13px)', fontWeight: 700, color: t.signBorder, letterSpacing: '0.18em' }}>
+                {t.closedWord}
+              </span>
+            </div>
+            {!loading && (
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 6 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(0,0,0,0.45)',
+                  border: '1px solid rgba(255,255,255,0.14)', borderRadius: 20, padding: '4px 10px', maxWidth: '100%' }}>
+                  <span style={{ fontSize: 14 }}>{weather.icon}</span>
+                  <span style={{ fontFamily: 'JetBrains Mono,monospace', fontSize: 'clamp(11px, 2.8vw, 12px)', fontWeight: 700, color: '#fff' }}>{weather.temp}</span>
+                  <span style={{ fontFamily: 'Work Sans,sans-serif', fontSize: 'clamp(9px, 2.4vw, 10px)', color: 'rgba(255,255,255,0.6)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{weather.condition}</span>
+                </div>
+              </div>
+            )}
+            <div style={{ fontFamily: 'Work Sans,sans-serif', fontSize: 'clamp(9.5px, 2.5vw, 11px)', color: 'rgba(255,255,255,0.35)', fontStyle: 'italic' }}>
+              {t.tagline}
+            </div>
+          </div>
+        </div>
 
-        {/* Region selector */}
-        <ShutterRegionTabs active={region} onChange={onRegionChange}/>
+        {/* ─── MIDDLE SPACER (flex grows here) ─── */}
+        <div style={{ flex: 1 }}/>
 
-        {/* Drag handle + CTA button */}
-        <DragHandle accent={t.accent} progress={dragProgress} onOpen={triggerOpen}/>
+        {/* ─── BOTTOM: City Tabs + CTA button + Hints ─── */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, width: '100%', maxWidth: 380 }}>
+
+          {/* ▶ CLICK TO START MUSIC — prominent CTA */}
+          <button
+            className="no-drag"
+            onPointerDown={e => e.stopPropagation()}
+            onClick={e => { e.stopPropagation(); triggerOpen(); }}
+            style={{
+              background: t.accent,
+              color: '#171b16',
+              border: 'none',
+              borderRadius: '30px',
+              padding: 'clamp(10px, 2.5vw, 13px) clamp(20px, 5vw, 32px)',
+              fontFamily: 'Work Sans, sans-serif',
+              fontSize: 'clamp(12px, 3.2vw, 14px)',
+              fontWeight: 800,
+              letterSpacing: '0.06em',
+              textTransform: 'uppercase',
+              cursor: 'pointer',
+              boxShadow: `0 6px 28px ${t.accent}90`,
+              transition: 'transform 0.15s ease, box-shadow 0.15s ease',
+              whiteSpace: 'nowrap',
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1.05)'; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)'; }}
+          >
+            ▶ TAP TO START MUSIC
+          </button>
+
+          {/* City Selector Tabs */}
+          <div
+            className="no-drag"
+            onPointerDown={e => e.stopPropagation()}
+            style={{
+              display: 'flex',
+              gap: 6,
+              background: 'rgba(0,0,0,0.75)',
+              backdropFilter: 'blur(12px)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              borderRadius: 10,
+              padding: '5px 6px',
+              width: '100%',
+              justifyContent: 'space-around',
+            }}
+          >
+            {REGIONS.map(({ id, label }) => {
+              const isA = id === region;
+              const th = THEMES[id];
+              return (
+                <button
+                  key={id}
+                  onPointerDown={e => e.stopPropagation()}
+                  onClick={e => { e.stopPropagation(); onRegionChange(id); }}
+                  style={{
+                    flex: 1,
+                    background: isA ? th.accentDim : 'transparent',
+                    border: `1px solid ${isA ? th.accent : 'rgba(255,255,255,0.15)'}`,
+                    borderRadius: 6,
+                    padding: 'clamp(5px, 1.5vw, 8px) 4px',
+                    fontFamily: 'Work Sans,sans-serif',
+                    fontSize: 'clamp(9px, 2.8vw, 11px)',
+                    fontWeight: isA ? 700 : 500,
+                    color: isA ? th.accent : 'rgba(255,255,255,0.55)',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s',
+                    letterSpacing: '0.04em',
+                    textTransform: 'uppercase',
+                    boxShadow: isA ? `0 0 8px ${th.accentDim}` : 'none',
+                    textAlign: 'center',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Drag up arrows hint */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, pointerEvents: 'none' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, opacity: 0.5 + dragProgress * 0.5 }}>
+              {[0.4, 0.65, 0.9].map((op, i) => (
+                <div key={i} style={{
+                  width: 0, height: 0,
+                  borderLeft: '5px solid transparent', borderRight: '5px solid transparent',
+                  borderBottom: `7px solid ${t.accent}`, opacity: op,
+                  animation: `shutter-hint-bob ${1.8 + i * 0.2}s ease-in-out infinite`,
+                  animationDelay: `${i * 0.12}s`,
+                }}/>
+              ))}
+            </div>
+            <div style={{ fontFamily: 'Work Sans,sans-serif', fontSize: 'clamp(8px, 2.2vw, 9.5px)', color: 'rgba(255,255,255,0.4)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+              or swipe up
+            </div>
+          </div>
+
+          {/* Footer credits */}
+          <div style={{ textAlign: 'center', pointerEvents: 'none' }}>
+            <div style={{ fontFamily: 'Work Sans, sans-serif', fontSize: 'clamp(8.5px, 2.2vw, 10px)', color: 'rgba(255,255,255,0.38)', letterSpacing: '0.04em' }}>
+              Made with ❤️ by Parardha Dhar
+            </div>
+            <div style={{ fontFamily: 'Work Sans, sans-serif', fontSize: 'clamp(7px, 1.8vw, 8px)', color: 'rgba(255,255,255,0.22)', letterSpacing: '0.02em', marginTop: 1 }}>
+              Streamed via official YouTube Music API · Non-commercial project
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
