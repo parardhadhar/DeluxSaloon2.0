@@ -178,6 +178,7 @@ export default function Home() {
   const [shutterState, setShutterState] = useState<'idle' | 'closing' | 'opening'>('idle');
   const [totalPlayed, setTotalPlayed] = useState(0);
   const [showCard, setShowCard] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const skipVoteResetRef = useRef<(() => void) | null>(null);
   const staticPlayerRef = useRef<ReturnType<typeof createStaticPlayer> | null>(null);
 
@@ -257,6 +258,14 @@ export default function Home() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [shopOpen, togglePlay, nextTrack, prevTrack]);
+
+  // Detect mobile viewport
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 640);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   // Region memory and returning visitor check via cookie
   useEffect(() => {
@@ -434,101 +443,92 @@ export default function Home() {
       {/* ══════════════════════════════════════════
           SPLASH SCREEN — mobile-first layout
       ══════════════════════════════════════════ */}
+      {/* ══ SPLASH SCREEN ══ */}
       {!shopOpen && (
         <div
-          className="splash-screen-wrapper"
           style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 50,
+            position: 'fixed', inset: 0, zIndex: 50,
             display: 'flex',
             alignItems: 'flex-end',
-            justifyContent: 'flex-start',
-            padding: '28px',
+            justifyContent: isMobile ? 'center' : 'flex-start',
+            padding: isMobile ? '0' : '28px',
             opacity: fadingOut ? 0 : 1,
             transition: 'opacity 0.5s ease',
             pointerEvents: fadingOut ? 'none' : 'auto',
-            /* Desktop: position card off-center; mobile CSS overrides to center */
-            ...SPLASH_CARD_POSITIONS[region],
+            ...(isMobile ? {} : SPLASH_CARD_POSITIONS[region]),
           }}
         >
           <div
-            className="splash-card splash-card-container"
+            className="splash-card-container"
             style={{
               display: 'flex',
-              alignItems: 'center',
-              gap: '28px',
-              padding: '24px 28px',
-              background: 'rgba(23, 27, 22, 0.92)',
-              backdropFilter: 'blur(16px)',
-              borderRadius: '16px',
+              flexDirection: isMobile ? 'column' : 'row',
+              alignItems: isMobile ? 'stretch' : 'center',
+              gap: isMobile ? '12px' : '28px',
+              padding: isMobile ? '22px 18px 32px' : '24px 28px',
+              background: 'rgba(18, 22, 18, 0.96)',
+              backdropFilter: 'blur(20px)',
+              borderRadius: isMobile ? '20px 20px 0 0' : '16px',
               border: '1px solid var(--border)',
-              boxShadow: '0 20px 60px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.05)',
-              maxWidth: '520px',
-              width: '100%',
-              zIndex: 2,
+              boxShadow: isMobile ? '0 -12px 40px rgba(0,0,0,0.9)' : '0 20px 60px rgba(0,0,0,0.85)',
+              width: isMobile ? '100%' : 'auto',
+              maxWidth: isMobile ? '100%' : '520px',
+              textAlign: isMobile ? 'center' : 'left',
             }}
           >
-            {/* Left — barber pole */}
-            <div className="splash-barber-pole" style={{ flexShrink: 0 }}>
-              <BarberPole isPlaying={true} size="lg" />
-            </div>
+            {/* Barber pole — desktop only */}
+            {!isMobile && (
+              <div style={{ flexShrink: 0 }}>
+                <BarberPole isPlaying={true} size="lg" />
+              </div>
+            )}
 
-            {/* Right — branding + CTA */}
+            {/* Branding + CTA */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', flex: 1, minWidth: 0 }}>
+              {/* Eyebrow */}
               <div className={`stagger-1 ${ui.fontClass}`} style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--accent-poster)' }}>
                 {ui.eyebrow} · {currentRegTitle.scriptName}
               </div>
 
+              {/* Title */}
               <div className="stagger-2">
-                <div
-                  className={ui.fontClass}
-                  style={{
-                    fontSize: 'clamp(1.5rem, 5vw, 2.6rem)',
-                    color: 'var(--accent-brass)',
-                    lineHeight: 1.1,
-                    letterSpacing: '0.01em',
-                    textShadow: '0 4px 16px rgba(0,0,0,0.7)',
-                  }}
-                >
+                <div className={ui.fontClass} style={{ fontSize: isMobile ? '1.8rem' : 'clamp(1.5rem, 5vw, 2.6rem)', color: 'var(--accent-brass)', lineHeight: 1.1, textShadow: '0 4px 16px rgba(0,0,0,0.7)' }}>
                   {currentRegTitle.title}
                 </div>
-                <div style={{ fontFamily: 'Work Sans, sans-serif', fontSize: '11px', color: 'var(--muted)', letterSpacing: '0.06em', marginTop: '2px' }}>
+                <div style={{ fontFamily: 'Work Sans, sans-serif', fontSize: '11px', color: 'var(--muted)', marginTop: '2px' }}>
                   Deluxe Saloon 2.0
                 </div>
               </div>
 
-              <div className="stagger-3">
+              {/* Weather */}
+              <div className="stagger-3" style={{ display: 'flex', justifyContent: isMobile ? 'center' : 'flex-start' }}>
                 <WeatherBadge region={region} weather={weather} variant="splash" />
               </div>
 
-              <div className={`stagger-4 ${ui.fontClass}`} style={{ fontSize: '12px', color: 'var(--text)', lineHeight: 1.4 }}>
-                "{hasVisited ? ui.returnGreeting : ui.greeting}"
-              </div>
-
-              <div className="stagger-5">
+              {/* City tabs */}
+              <div className="stagger-4">
                 <div className={ui.fontClass} style={{ fontSize: '10px', fontWeight: 500, color: 'var(--muted)', marginBottom: '6px' }}>
                   {ui.selectCityPrompt}
                 </div>
                 <RegionTabs active={region} onChange={setRegion} />
               </div>
 
-              <div className="stagger-6">
+              {/* CTA */}
+              <div className="stagger-5">
                 <button
                   id="open-shop-btn"
                   onClick={openShop}
                   className={`open-shop-btn ${ui.fontClass}`}
                   style={{
+                    width: '100%',
                     background: 'var(--accent-brass)',
                     color: '#171b16',
                     border: 'none',
-                    borderRadius: '6px',
-                    padding: '10px 24px',
-                    fontSize: '13px',
+                    borderRadius: '8px',
+                    padding: '12px 24px',
+                    fontSize: '14px',
                     fontWeight: 700,
                     cursor: 'pointer',
-                    marginTop: '2px',
-                    width: '100%',
                   }}
                 >
                   {ui.openShopCTA}
@@ -543,10 +543,11 @@ export default function Home() {
           PLAYER SCREEN
           ULTRA-MINIMALIST, HIGHLY STREAMLINED WIDGET
       ══════════════════════════════════════════ */}
+      {/* ══ PLAYER SCREEN ══ */}
       {shopOpen && (
         <main
           style={{
-            height: '100vh',
+            height: isMobile ? '100dvh' : '100vh',
             display: 'flex',
             flexDirection: 'column',
             position: 'relative',
@@ -557,40 +558,34 @@ export default function Home() {
         >
           {/* ── HEADER BAR ── */}
           <div
-            className="header-bar"
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: '8px 16px',
+              padding: isMobile ? '8px 12px' : '8px 18px',
               borderBottom: '1px solid var(--border)',
-              background: 'rgba(35, 42, 32, 0.92)',
-              backdropFilter: 'blur(10px)',
+              background: 'rgba(18, 22, 18, 0.95)',
+              backdropFilter: 'blur(12px)',
               flexShrink: 0,
-              gap: '8px',
-              minWidth: 0,
+              gap: isMobile ? '6px' : '10px',
             }}
           >
-            {/* Left: title + weather */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0, flex: '0 1 auto', overflow: 'hidden' }}>
-              <span
-                className={`header-title ${ui.fontClass}`}
-                style={{ fontSize: 'clamp(11px, 3vw, 15px)', fontWeight: 700, color: 'var(--accent-brass)', lineHeight: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 'clamp(90px, 25vw, 200px)' }}
-              >
+            {/* Title + weather */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0, overflow: 'hidden', flex: '0 1 auto' }}>
+              <span className={ui.fontClass} style={{ fontSize: isMobile ? '12px' : '15px', fontWeight: 700, color: 'var(--accent-brass)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: isMobile ? '100px' : '220px' }}>
                 {currentRegTitle.title}
               </span>
-              <WeatherBadge region={region} weather={weather} variant="header" />
+              {!isMobile && <WeatherBadge region={region} weather={weather} variant="header" />}
             </div>
 
-            {/* Center: live listener count */}
+            {/* Live listeners */}
             <div
-              className={`header-badge ${ui.fontClass}`}
               style={{
-                fontSize: 'clamp(9px, 2.5vw, 11px)',
+                fontSize: isMobile ? '9px' : '11px',
                 color: 'var(--text)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px',
-                background: 'rgba(23, 27, 22, 0.8)',
-                padding: '5px 10px',
+                gap: '5px',
+                background: 'rgba(23, 27, 22, 0.85)',
+                padding: isMobile ? '4px 8px' : '5px 12px',
                 borderRadius: '999px',
                 border: '1px solid rgba(255, 255, 255, 0.1)',
                 fontWeight: 500,
@@ -600,20 +595,19 @@ export default function Home() {
               aria-live="polite"
             >
               <span className="live-dot-pulse" style={{ width: 6, height: 6, borderRadius: '50%', background: isPlaying ? '#4caf50' : 'var(--muted)', display: 'inline-block', flexShrink: 0 }} />
-              {listenerLabel}
+              {isMobile ? listenerLabel : listenerLabel}
             </div>
 
-            {/* Right: Card button */}
+            {/* Card button */}
             <button
               id="my-card-btn"
               onClick={() => setShowCard(true)}
-              title="Your Customer Card"
               style={{
-                background: 'rgba(23, 27, 22, 0.8)',
-                border: '1px solid rgba(255,255,255,0.1)',
+                background: 'rgba(23, 27, 22, 0.85)',
+                border: '1px solid rgba(255,255,255,0.12)',
                 borderRadius: '999px',
-                padding: '5px 10px',
-                fontSize: 'clamp(10px, 2.5vw, 11px)',
+                padding: isMobile ? '5px 8px' : '5px 12px',
+                fontSize: isMobile ? '13px' : '11px',
                 fontWeight: 600,
                 color: 'var(--accent-brass)',
                 cursor: 'pointer',
@@ -621,108 +615,61 @@ export default function Home() {
                 alignItems: 'center',
                 gap: 4,
                 flexShrink: 0,
-                whiteSpace: 'nowrap',
               }}
             >
-              🪒 <span className="header-card-btn-text">Card</span>
+              🪒{!isMobile && ' Card'}
             </button>
           </div>
 
-          {/* ── BODY: player card anchored bottom ── */}
-          <div
-            className="player-bottom-container"
-            style={{
-              flex: 1,
-              display: 'flex',
-              alignItems: 'flex-end',
-              justifyContent: 'flex-start',
-              padding: 'clamp(0px, 2vw, 0px) clamp(8px, 2vw, 16px) clamp(12px, 3vh, 28px) clamp(8px, 3vw, 28px)',
-              minHeight: 0,
-              width: '100%',
-            }}
-          >
-            <div
-              className="player-row"
-              style={{ display: 'flex', alignItems: 'flex-end', gap: '12px', width: '100%', maxWidth: '520px' }}
-            >
-              {/* DETACHED BARBER POLE (hidden on mobile via CSS) */}
+          {/* ── PLAYER BODY ── */}
+          {isMobile ? (
+            /* ── MOBILE: full-width bottom panel ── */
+            <div style={{ flex: 1, position: 'relative', minHeight: 0 }}>
+              {/* Player card pinned to bottom, full width */}
               <div
-                className="surface-card detached-barber-pole"
                 style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  padding: '12px',
-                  background: 'rgba(35, 42, 32, 0.92)',
-                  backdropFilter: 'blur(16px)',
-                  borderRadius: '12px',
-                  boxShadow: '0 10px 32px rgba(0,0,0,0.7)',
-                  border: '1px solid var(--border)',
-                  flexShrink: 0,
-                }}
-              >
-                <BarberPole isPlaying={isPlaying} size="sm" />
-              </div>
-
-              {/* PLAYER CARD — full width on mobile */}
-              <div
-                className="surface-card player-card-widget"
-                style={{
+                  position: 'absolute',
+                  bottom: 0, left: 0, right: 0,
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '10px',
-                  padding: '14px 16px',
-                  borderRadius: '12px',
-                  overflow: 'hidden',
-                  flex: 1,
-                  minWidth: 0,
-                  width: '100%',
-                  background: 'rgba(35, 42, 32, 0.92)',
-                  backdropFilter: 'blur(16px)',
-                  boxShadow: '0 10px 32px rgba(0,0,0,0.7)',
+                  padding: '16px 16px 20px',
+                  background: 'rgba(18, 22, 18, 0.97)',
+                  backdropFilter: 'blur(20px)',
+                  borderRadius: '20px 20px 0 0',
                   border: '1px solid var(--border)',
+                  borderBottom: 'none',
+                  boxShadow: '0 -8px 40px rgba(0,0,0,0.85)',
                 }}
               >
                 {/* Track info */}
                 <div>
-                  <div
-                    className="font-display"
-                    style={{
-                      fontSize: 'clamp(0.95rem, 4vw, 1.15rem)',
-                      color: 'var(--text)',
-                      lineHeight: 1.2,
-                      marginBottom: '2px',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
+                  <div className="font-display" style={{ fontSize: '1.1rem', color: 'var(--text)', lineHeight: 1.2, marginBottom: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {currentTrack?.title ?? 'Loading…'}
                   </div>
                   <div style={{ fontFamily: 'Work Sans, sans-serif', fontSize: '11px', color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
                     <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{currentTrack?.artist ?? ''}</span>
                     {currentTrack?.year && (
-                      <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '9px', color: 'var(--accent-poster)', background: 'rgba(179,58,58,0.14)', padding: '0 4px', borderRadius: '3px', flexShrink: 0 }}>
-                        {currentTrack.year}
-                      </span>
+                      <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '9px', color: 'var(--accent-poster)', background: 'rgba(179,58,58,0.14)', padding: '0 4px', borderRadius: '3px', flexShrink: 0 }}>{currentTrack.year}</span>
                     )}
                   </div>
                 </div>
 
-                {/* Progress bar */}
                 <ProgressBar currentTime={currentTime} duration={duration} onSeek={seekTo} />
 
-                {/* Playback Controls */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <CtrlBtn id="prev-btn" onClick={prevTrack} title="Previous (←)">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+                {/* Controls row */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <CtrlBtn id="prev-btn" onClick={prevTrack} title="Previous">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
                   </CtrlBtn>
 
+                  {/* Big play button on mobile */}
                   <button
                     id="play-pause-btn"
                     onClick={togglePlay}
-                    title="Play / Pause"
                     disabled={!isReady}
                     style={{
-                      width: 40, height: 40,
+                      width: 52, height: 52,
                       borderRadius: '50%',
                       background: 'var(--accent-brass)',
                       border: 'none',
@@ -730,77 +677,122 @@ export default function Home() {
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       color: '#171b16',
                       opacity: isReady ? 1 : 0.5,
-                      transition: 'transform 0.15s',
-                      boxShadow: '0 3px 10px rgba(201,162,39,0.3)',
+                      boxShadow: '0 4px 16px rgba(201,162,39,0.45)',
                       flexShrink: 0,
                     }}
                   >
                     {isPlaying
-                      ? <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                      : <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{ marginLeft: 2 }}><path d="M8 5v14l11-7z"/></svg>
+                      ? <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                      : <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style={{ marginLeft: 3 }}><path d="M8 5v14l11-7z"/></svg>
                     }
                   </button>
 
-                  <CtrlBtn id="next-btn" onClick={nextTrack} title="Next (→)">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2-8.14 4.5 3.14-4.5 3.14V9.86zM16 6h2v12h-2z"/></svg>
+                  <CtrlBtn id="next-btn" onClick={nextTrack} title="Next">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2-8.14 4.5 3.14-4.5 3.14V9.86zM16 6h2v12h-2z"/></svg>
                   </CtrlBtn>
 
                   <div style={{ flex: 1 }} />
 
-                  {/* Skip vote button */}
                   <button
                     id="skip-vote-btn"
                     className={ui.fontClass}
                     onClick={vote}
-                    title={ui.skipButton}
                     style={{
                       display: 'flex', alignItems: 'center', gap: '4px',
-                      padding: '6px 10px',
-                      borderRadius: '6px',
+                      padding: '7px 12px',
+                      borderRadius: '8px',
                       border: `1px solid ${hasVoted ? 'var(--accent-poster)' : 'var(--border)'}`,
                       background: hasVoted ? 'rgba(179,58,58,0.12)' : 'transparent',
                       color: hasVoted ? 'var(--accent-poster)' : 'var(--muted)',
-                      fontSize: '10px',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      flexShrink: 0,
+                      fontSize: '11px', fontWeight: 600, cursor: 'pointer', flexShrink: 0,
                     }}
                   >
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V11c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
-                    </svg>
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V11c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
                     <span>{ui.skipButton}</span>
-                    {votes > 0 && (
-                      <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '9px', background: 'rgba(179,58,58,0.2)', color: 'var(--accent-poster)', padding: '0 4px', borderRadius: '4px' }}>
-                        {votes}
-                      </span>
-                    )}
+                    {votes > 0 && <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '9px', background: 'rgba(179,58,58,0.2)', color: 'var(--accent-poster)', padding: '0 4px', borderRadius: '4px' }}>{votes}</span>}
                   </button>
                 </div>
 
-                {/* Up Next */}
                 <InlineUpNext tracks={tracks} currentIndex={currentIndex} ui={ui} barbersPickId={barbersPickId} />
-
-                {/* Region tabs */}
                 <RegionTabs active={region} onChange={handleRegionChange} />
+
+                <div style={{ textAlign: 'center', fontSize: '8px', color: 'rgba(255,255,255,0.28)' }}>
+                  Made with ❤️ by Parardha Dhar · Non-commercial project
+                </div>
               </div>
             </div>
-          </div>
+          ) : (
+            /* ── DESKTOP: bottom-left floating card ── */
+            <div
+              style={{
+                flex: 1,
+                display: 'flex',
+                alignItems: 'flex-end',
+                justifyContent: 'flex-start',
+                padding: '0 0 28px 28px',
+                minHeight: 0,
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'flex-end', gap: '12px', maxWidth: '520px' }}>
+                {/* Barber pole */}
+                <div
+                  className="surface-card"
+                  style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px', background: 'rgba(35,42,32,0.92)', backdropFilter: 'blur(16px)', borderRadius: '12px', boxShadow: '0 10px 32px rgba(0,0,0,0.7)', border: '1px solid var(--border)', flexShrink: 0 }}
+                >
+                  <BarberPole isPlaying={isPlaying} size="sm" />
+                </div>
+
+                {/* Player card */}
+                <div
+                  className="surface-card"
+                  style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '14px 16px', borderRadius: '12px', overflow: 'hidden', width: '340px', background: 'rgba(35,42,32,0.92)', backdropFilter: 'blur(16px)', boxShadow: '0 10px 32px rgba(0,0,0,0.7)', border: '1px solid var(--border)' }}
+                >
+                  <div>
+                    <div className="font-display" style={{ fontSize: '1.1rem', color: 'var(--text)', lineHeight: 1.2, marginBottom: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {currentTrack?.title ?? 'Loading…'}
+                    </div>
+                    <div style={{ fontFamily: 'Work Sans, sans-serif', fontSize: '11px', color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                      <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{currentTrack?.artist ?? ''}</span>
+                      {currentTrack?.year && <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '9px', color: 'var(--accent-poster)', background: 'rgba(179,58,58,0.14)', padding: '0 4px', borderRadius: '3px', flexShrink: 0 }}>{currentTrack.year}</span>}
+                    </div>
+                  </div>
+                  <ProgressBar currentTime={currentTime} duration={duration} onSeek={seekTo} />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <CtrlBtn id="prev-btn" onClick={prevTrack} title="Previous (←)"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg></CtrlBtn>
+                    <button id="play-pause-btn" onClick={togglePlay} disabled={!isReady} style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--accent-brass)', border: 'none', cursor: isReady ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#171b16', opacity: isReady ? 1 : 0.5, boxShadow: '0 3px 10px rgba(201,162,39,0.3)', flexShrink: 0 }}>
+                      {isPlaying ? <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg> : <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style={{ marginLeft: 2 }}><path d="M8 5v14l11-7z"/></svg>}
+                    </button>
+                    <CtrlBtn id="next-btn" onClick={nextTrack} title="Next (→)"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2-8.14 4.5 3.14-4.5 3.14V9.86zM16 6h2v12h-2z"/></svg></CtrlBtn>
+                    <div style={{ flex: 1 }} />
+                    <button id="skip-vote-btn" className={ui.fontClass} onClick={vote} style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '4px 8px', borderRadius: '4px', border: `1px solid ${hasVoted ? 'var(--accent-poster)' : 'var(--border)'}`, background: hasVoted ? 'rgba(179,58,58,0.12)' : 'transparent', color: hasVoted ? 'var(--accent-poster)' : 'var(--muted)', fontSize: '10px', fontWeight: 600, cursor: 'pointer', flexShrink: 0 }}>
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6V11c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+                      <span>{ui.skipButton}</span>
+                      {votes > 0 && <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '9px', background: 'rgba(179,58,58,0.2)', color: 'var(--accent-poster)', padding: '0 4px', borderRadius: '4px' }}>{votes}</span>}
+                    </button>
+                  </div>
+                  <InlineUpNext tracks={tracks} currentIndex={currentIndex} ui={ui} barbersPickId={barbersPickId} />
+                  <RegionTabs active={region} onChange={handleRegionChange} />
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* ── TICKER ── */}
           <NowPlayingTicker history={history} prefix={ui.tickerPrefix} fontClass={ui.fontClass} />
 
-          {/* ── FOOTER: CREDITS & DISCLAIMER ── */}
-          <div className="player-footer" style={{ textAlign: 'center', padding: '4px 12px', fontSize: '9px', color: 'var(--muted)', flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-              <span className={`keyboard-hint ${ui.fontClass}`}>{ui.keyboardHint}</span>
-              <span style={{ opacity: 0.5 }} className="keyboard-hint">·</span>
-              <span style={{ color: 'var(--accent-brass)', fontWeight: 600 }}>Made with ❤️ by Parardha Dhar</span>
+          {/* ── FOOTER ── */}
+          {!isMobile && (
+            <div style={{ textAlign: 'center', padding: '4px 12px', fontSize: '9px', color: 'var(--muted)', flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                <span className={ui.fontClass}>{ui.keyboardHint}</span>
+                <span style={{ opacity: 0.5 }}>·</span>
+                <span style={{ color: 'var(--accent-brass)', fontWeight: 600 }}>Made with ❤️ by Parardha Dhar</span>
+              </div>
+              <div style={{ fontSize: '8px', color: 'rgba(255,255,255,0.32)', letterSpacing: '0.02em', marginTop: '1px' }}>
+                Non-commercial project · Streamed via YouTube IFrame API · All rights to respective creators
+              </div>
             </div>
-            <div style={{ fontSize: '8px', color: 'rgba(255,255,255,0.32)', letterSpacing: '0.02em', marginTop: '1px' }}>
-              Non-commercial project · Streamed via YouTube IFrame API · All rights to respective creators
-            </div>
-          </div>
+          )}
         </main>
       )}
 
