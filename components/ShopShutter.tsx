@@ -199,20 +199,31 @@ function ShopSign({ region, weather, loading }: { region: Region; weather: {icon
 // ── REGION TABS ───────────────────────────────────────────────────────────────
 function ShutterRegionTabs({ active, onChange }: { active: Region; onChange: (r: Region) => void }) {
   return (
-    <div style={{position:'absolute',bottom:'22%',left:'50%',transform:'translateX(-50%)',
-      zIndex:25,display:'flex',gap:8,background:'rgba(0,0,0,0.7)',backdropFilter:'blur(12px)',
-      border:'1px solid rgba(255,255,255,0.12)',borderRadius:10,padding:'6px 8px',flexWrap:'wrap',justifyContent:'center'}}>
+    <div
+      className="no-drag"
+      onPointerDown={e => e.stopPropagation()}
+      style={{
+        position:'absolute',bottom:'22%',left:'50%',transform:'translateX(-50%)',
+        zIndex:25,display:'flex',gap:8,background:'rgba(0,0,0,0.7)',backdropFilter:'blur(12px)',
+        border:'1px solid rgba(255,255,255,0.12)',borderRadius:10,padding:'6px 8px',flexWrap:'wrap',justifyContent:'center',
+      }}
+    >
       {REGIONS.map(({id,label})=>{
         const isA=id===active; const t=THEMES[id];
         return (
-          <button key={id} onClick={e=>{e.stopPropagation();onChange(id);}} style={{
-            background:isA?t.accentDim:'transparent',
-            border:`1px solid ${isA?t.accent:'rgba(255,255,255,0.15)'}`,
-            borderRadius:6,padding:'5px 12px',fontFamily:'Work Sans,sans-serif',
-            fontSize:11,fontWeight:isA?700:500,color:isA?t.accent:'rgba(255,255,255,0.55)',
-            cursor:'pointer',transition:'all 0.2s',letterSpacing:'0.06em',textTransform:'uppercase',
-            boxShadow:isA?`0 0 8px ${t.accentDim}`:'none',
-          }}>
+          <button
+            key={id}
+            onPointerDown={e => e.stopPropagation()}
+            onClick={e=>{ e.stopPropagation(); onChange(id); }}
+            style={{
+              background:isA?t.accentDim:'transparent',
+              border:`1px solid ${isA?t.accent:'rgba(255,255,255,0.15)'}`,
+              borderRadius:6,padding:'5px 12px',fontFamily:'Work Sans,sans-serif',
+              fontSize:11,fontWeight:isA?700:500,color:isA?t.accent:'rgba(255,255,255,0.55)',
+              cursor:'pointer',transition:'all 0.2s',letterSpacing:'0.06em',textTransform:'uppercase',
+              boxShadow:isA?`0 0 8px ${t.accentDim}`:'none',
+            }}
+          >
             {label}
           </button>
         );
@@ -305,6 +316,10 @@ export default function ShopShutter({ region, onRegionChange, onReveal }: ShopSh
   // ── Pointer (mouse, touch & pen) gesture handlers ──────────────────────────
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (completed) return;
+    const target = e.target as HTMLElement;
+    if (target.closest('button') || target.closest('.no-drag')) {
+      return;
+    }
     startYRef.current = e.clientY;
     try {
       (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
