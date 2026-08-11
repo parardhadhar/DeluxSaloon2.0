@@ -776,11 +776,16 @@ export default function Home() {
           {/* ── TICKER ── */}
           <NowPlayingTicker history={history} prefix={ui.tickerPrefix} fontClass={ui.fontClass} />
 
-          {/* ── KEYBOARD HINTS & CREDIT ── */}
-          <div style={{ textAlign: 'center', padding: '4px', fontSize: '10px', color: 'var(--muted)', flexShrink: 0, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-            <span className={ui.fontClass}>{ui.keyboardHint}</span>
-            <span style={{ opacity: 0.5 }}>·</span>
-            <span style={{ color: 'var(--accent-brass)', fontWeight: 600 }}>Made with ❤️ by Parardha Dhar</span>
+          {/* ── KEYBOARD HINTS, CREDIT & DISCLAIMER ── */}
+          <div style={{ textAlign: 'center', padding: '4px 12px', fontSize: '9px', color: 'var(--muted)', flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+              <span className={ui.fontClass}>{ui.keyboardHint}</span>
+              <span style={{ opacity: 0.5 }}>·</span>
+              <span style={{ color: 'var(--accent-brass)', fontWeight: 600 }}>Made with ❤️ by Parardha Dhar</span>
+            </div>
+            <div style={{ fontSize: '8.5px', color: 'rgba(255,255,255,0.35)', letterSpacing: '0.02em', marginTop: '1px' }}>
+              ℹ️ Non-commercial ambient project. Audio is streamed live via official YouTube IFrame API. All music rights belong to their respective creators & copyright owners.
+            </div>
           </div>
         </main>
       )}

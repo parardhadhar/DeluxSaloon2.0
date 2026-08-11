@@ -34,5 +34,11 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 - [YouTube IFrame API](https://developers.google.com/youtube/iframe_api_reference)
 - [Open-Meteo API](https://open-meteo.com/) (Live Weather)
 
+## 📜 Copyright & Legal Disclaimer
+
+- **Non-Commercial Ambient Project**: This project is created solely for personal portfolio and ambient educational demonstration purposes.
+- **Audio Streaming**: All music and audio tracks are streamed directly via YouTube's official public [IFrame API](https://developers.google.com/youtube/iframe_api_reference) and YouTube Music embeds.
+- **No Asset Ownership**: We do **not** host, store, download, distribute, or claim ownership of any copyrighted audio tracks or trademarked content. All rights, royalties, and ownership remain strictly with the respective original artists, record labels, and YouTube copyright holders.
+
 ---
 *Made with ❤️ by Parardha Dhar for retro Indian saloon culture.*

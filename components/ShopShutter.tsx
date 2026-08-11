@@ -278,6 +278,13 @@ function DragHandle({ accent, progress }: { accent: string; progress: number }) 
       }}>
         Made with ❤️ by Parardha Dhar
       </div>
+      <div style={{
+        fontFamily: 'Work Sans, sans-serif', fontSize: 8.5,
+        color: 'rgba(255,255,255,0.28)', letterSpacing: '0.02em',
+        marginTop: 1,
+      }}>
+        Streamed via official YouTube Music API · Non-commercial project
+      </div>
     </div>
   );
 }
