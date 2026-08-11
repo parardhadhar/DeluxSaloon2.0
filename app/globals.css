@@ -484,162 +484,173 @@ button, a {
 }
 
 /* ==========================================
-   MOBILE — Full Responsive Overrides
+   MOBILE — Complete Layout Overhaul
    ========================================== */
 
 @media (max-width: 640px) {
-  /* ── SPLASH SCREEN ── */
-  /* Force center-of-screen on mobile, not anchored to corner */
+
+  /* ── SPLASH SCREEN: full-width bottom sheet on mobile ── */
   .splash-screen-wrapper {
     position: fixed !important;
     inset: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    top: 0 !important;
+    left: 0 !important; right: 0 !important;
+    bottom: 0 !important; top: 0 !important;
     display: flex !important;
     align-items: flex-end !important;
     justify-content: center !important;
-    padding: 0 8px 20px 8px !important;
+    padding: 0 !important;
   }
 
   .splash-card {
     flex-direction: column !important;
     gap: 10px !important;
-    padding: 16px 14px !important;
+    padding: 20px 16px 28px !important;
     width: 100% !important;
     max-width: 100% !important;
-    max-height: 75vh !important;
+    max-height: 80vh !important;
     overflow-y: auto !important;
     text-align: center !important;
+    border-radius: 20px 20px 0 0 !important;
+  }
+
+  /* Hide barber pole and greeting on mobile splash */
+  .splash-barber-pole {
+    display: none !important;
   }
 
   .splash-card .stagger-4 {
-    display: none !important; /* hide greeting quote on small screens */
+    display: none !important;
   }
 
-  .splash-card #open-shop-btn {
-    align-self: center !important;
-    width: 100% !important;
+  /* ── PLAYER MAIN: use flex column so header+player fill screen ── */
+  main {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100dvh !important; /* dynamic viewport height for mobile browsers */
   }
 
-  /* ── PLAYER HEADER BAR ── */
+  /* ── HEADER BAR ── */
   .header-bar {
-    padding: 6px 10px !important;
-    gap: 4px !important;
-    flex-wrap: nowrap !important;
+    padding: 8px 12px !important;
+    gap: 6px !important;
+    flex-shrink: 0 !important;
   }
 
   .header-title {
-    font-size: 11px !important;
-    max-width: 110px !important;
+    font-size: 12px !important;
+    max-width: 100px !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     white-space: nowrap !important;
   }
 
   .header-badge {
-    padding: 4px 7px !important;
+    padding: 4px 8px !important;
     font-size: 9px !important;
     gap: 4px !important;
   }
 
-  /* Hide Card button text on smallest screens */
   .header-card-btn-text {
     display: none !important;
   }
 
-  /* ── PLAYER BODY ── */
+  /* ── PLAYER BODY: take up all remaining vertical space ── */
   .player-bottom-container {
-    padding: 0 8px 10px 8px !important;
-    justify-content: center !important;
+    flex: 1 !important;
+    padding: 0 !important;
+    /* On mobile, pin the player card as a bottom panel */
     align-items: flex-end !important;
+    justify-content: stretch !important;
+    width: 100% !important;
   }
 
   .player-row {
+    width: 100% !important;
+    max-width: 100% !important;
     flex-direction: column !important;
     align-items: stretch !important;
     gap: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
   }
 
-  /* Hide the detached barber pole to save space */
+  /* Hide barber pole on mobile */
   .detached-barber-pole {
     display: none !important;
   }
 
+  /* Player card: full-width bottom panel, no floating corner card */
   .player-card-widget {
     width: 100% !important;
     max-width: 100% !important;
-    padding: 12px 12px !important;
-    gap: 8px !important;
-    border-radius: 12px !important;
+    min-width: 0 !important;
+    padding: 14px 16px 20px !important;
+    gap: 10px !important;
+    border-radius: 20px 20px 0 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: none !important;
+    box-shadow: 0 -8px 40px rgba(0,0,0,0.8) !important;
   }
 
-  /* ── REGION TABS (inside player card) ── */
-  .region-tabs-container {
-    display: flex;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    width: 100%;
-  }
-
+  /* Region tabs — equal width, no scroll */
   .region-tab {
-    flex: 1;
-    text-align: center;
-    padding: 6px 2px !important;
-    font-size: 9px !important;
-    min-width: 0;
+    flex: 1 !important;
+    text-align: center !important;
+    padding: 7px 2px !important;
+    font-size: 9.5px !important;
+    min-width: 0 !important;
+    white-space: nowrap !important;
   }
 
-  /* ── SCENE BUBBLES ── */
-  .scene-bubble-container {
-    top: 12% !important;
-    right: 3% !important;
-    max-width: 150px !important;
-    font-size: 10px !important;
-    padding: 6px 10px !important;
-  }
-
-  /* ── TOAST COMMENTS ── */
-  .toast-comment {
-    font-size: 11px !important;
-    padding: 8px 10px !important;
-    max-width: 80vw !important;
-  }
-
-  /* ── TICKER ── */
+  /* Ticker: slightly smaller */
   .ticker-track {
     font-size: 10px !important;
   }
 
-  /* ── CHAT BUTTON — move up on mobile so it doesn't clash with player card ── */
-  #saloon-live-chat-toggle {
-    bottom: 80px !important;
-    right: 10px !important;
-    padding: 8px 14px !important;
-    font-size: 12px !important;
+  /* Footer: hide keyboard hints */
+  .player-footer {
+    font-size: 8px !important;
+    padding: 3px 10px !important;
+  }
+  .keyboard-hint {
+    display: none !important;
   }
 
-  /* ── CHAT WINDOW — full width bottom sheet on mobile ── */
+  /* Scene bubbles: smaller, top area */
+  .scene-bubble-container {
+    top: 10% !important;
+    right: 3% !important;
+    max-width: 145px !important;
+    font-size: 10px !important;
+    padding: 5px 9px !important;
+  }
+
+  /* Toast comments */
+  .toast-comment {
+    font-size: 10px !important;
+    padding: 7px 10px !important;
+    max-width: 78vw !important;
+  }
+
+  /* ── CHAT BUTTON: above the player card, not overlapping ── */
+  #saloon-live-chat-toggle {
+    bottom: 220px !important; /* above player card height */
+    right: 12px !important;
+    padding: 8px 14px !important;
+    font-size: 12px !important;
+    border-radius: 20px !important;
+  }
+
+  /* ── CHAT WINDOW: full-width bottom sheet ── */
   .saloon-chat-window {
+    position: fixed !important;
     bottom: 0 !important;
     right: 0 !important;
     left: 0 !important;
     width: 100% !important;
     max-width: 100% !important;
-    border-radius: 16px 16px 0 0 !important;
-    height: 70vh !important;
-  }
-
-  /* ── FOOTER ── */
-  .player-footer {
-    font-size: 8px !important;
-    padding: 2px 8px !important;
-  }
-  .player-footer .keyboard-hint {
-    display: none !important; /* keyboard hints irrelevant on mobile */
+    border-radius: 20px 20px 0 0 !important;
+    height: 72vh !important;
+    z-index: 99999 !important;
   }
 }
 
@@ -663,7 +674,6 @@ button, a {
 }
 
 @media (max-height: 500px) {
-  /* Landscape phone — make player card very compact */
   .player-card-widget {
     padding: 6px 10px !important;
     gap: 4px !important;
@@ -672,4 +682,8 @@ button, a {
     max-height: 90vh !important;
     overflow-y: auto !important;
   }
+  #saloon-live-chat-toggle {
+    bottom: 160px !important;
+  }
 }
+

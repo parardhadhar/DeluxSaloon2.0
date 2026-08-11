@@ -444,10 +444,11 @@ export default function Home() {
             display: 'flex',
             alignItems: 'flex-end',
             justifyContent: 'flex-start',
-            padding: '32px',
+            padding: '28px',
             opacity: fadingOut ? 0 : 1,
             transition: 'opacity 0.5s ease',
             pointerEvents: fadingOut ? 'none' : 'auto',
+            /* Desktop: position card off-center; mobile CSS overrides to center */
             ...SPLASH_CARD_POSITIONS[region],
           }}
         >
@@ -637,6 +638,7 @@ export default function Home() {
               justifyContent: 'flex-start',
               padding: 'clamp(0px, 2vw, 0px) clamp(8px, 2vw, 16px) clamp(12px, 3vh, 28px) clamp(8px, 3vw, 28px)',
               minHeight: 0,
+              width: '100%',
             }}
           >
             <div
