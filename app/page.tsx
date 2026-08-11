@@ -17,6 +17,7 @@ import TimeOfDayOverlay from '@/components/TimeOfDayOverlay';
 import SceneBubble from '@/components/SceneBubble';
 import EasterEggConfetti from '@/components/EasterEggConfetti';
 import ShopShutter from '@/components/ShopShutter';
+import SaloonChat from '@/components/SaloonChat';
 import { useWeather } from '@/hooks/useWeather';
 import { useKonamiEgg } from '@/hooks/useKonamiEgg';
 import { createStaticPlayer } from '@/lib/radioStatic';
@@ -789,6 +790,9 @@ export default function Home() {
           </div>
         </main>
       )}
+
+      {/* ── Anonymous Live Radio Chat Widget ── */}
+      <SaloonChat currentRegion={region} listenerCount={listenerLabel} />
     </>
   );
 }
