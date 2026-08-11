@@ -59,7 +59,7 @@ const REGION_TITLES: Record<Region, { title: string; subtitle: string; fontClass
   },
 };
 
-// ── REGIONAL SPLASH CARD POSITIONS (Off-center to unblock barber face) ────────
+// ── REGIONAL SPLASH CARD POSITIONS (desktop off-center; mobile overridden in CSS) ────────
 const SPLASH_CARD_POSITIONS: Record<Region, React.CSSProperties> = {
   mumbai: { bottom: '7%', left: '5%' },
   delhi: { bottom: '7%', left: '5%' },
@@ -432,12 +432,15 @@ export default function Home() {
       )}
 
       {/* ══════════════════════════════════════════
-          SPLASH SCREEN
+          SPLASH SCREEN — mobile-first layout
       ══════════════════════════════════════════ */}
       {!shopOpen && (
         <div
+          className="splash-screen-wrapper"
           style={{
-            position: 'fixed', inset: 0, zIndex: 50,
+            position: 'fixed',
+            inset: 0,
+            zIndex: 50,
             display: 'flex',
             alignItems: 'flex-end',
             justifyContent: 'flex-start',
@@ -453,24 +456,25 @@ export default function Home() {
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '32px',
-              padding: '28px 36px',
-              background: 'rgba(23, 27, 22, 0.88)',
+              gap: '28px',
+              padding: '24px 28px',
+              background: 'rgba(23, 27, 22, 0.92)',
               backdropFilter: 'blur(16px)',
               borderRadius: '16px',
               border: '1px solid var(--border)',
               boxShadow: '0 20px 60px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.05)',
-              maxWidth: '560px',
+              maxWidth: '520px',
+              width: '100%',
               zIndex: 2,
             }}
           >
-            {/* Left — barber pole (Always spinning continuously) */}
-            <div style={{ flexShrink: 0 }}>
+            {/* Left — barber pole */}
+            <div className="splash-barber-pole" style={{ flexShrink: 0 }}>
               <BarberPole isPlaying={true} size="lg" />
             </div>
 
-            {/* Right — branding + CTA with staggered entrance */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: 1, minWidth: 0 }}>
+            {/* Right — branding + CTA */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', flex: 1, minWidth: 0 }}>
               <div className={`stagger-1 ${ui.fontClass}`} style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--accent-poster)' }}>
                 {ui.eyebrow} · {currentRegTitle.scriptName}
               </div>
@@ -479,7 +483,7 @@ export default function Home() {
                 <div
                   className={ui.fontClass}
                   style={{
-                    fontSize: 'clamp(2rem, 4vw, 2.8rem)',
+                    fontSize: 'clamp(1.5rem, 5vw, 2.6rem)',
                     color: 'var(--accent-brass)',
                     lineHeight: 1.1,
                     letterSpacing: '0.01em',
@@ -488,15 +492,7 @@ export default function Home() {
                 >
                   {currentRegTitle.title}
                 </div>
-                <div
-                  style={{
-                    fontFamily: 'Work Sans, sans-serif',
-                    fontSize: '11px',
-                    color: 'var(--muted)',
-                    letterSpacing: '0.06em',
-                    marginTop: '2px',
-                  }}
-                >
+                <div style={{ fontFamily: 'Work Sans, sans-serif', fontSize: '11px', color: 'var(--muted)', letterSpacing: '0.06em', marginTop: '2px' }}>
                   Deluxe Saloon 2.0
                 </div>
               </div>
@@ -505,7 +501,7 @@ export default function Home() {
                 <WeatherBadge region={region} weather={weather} variant="splash" />
               </div>
 
-              <div className={`stagger-4 ${ui.fontClass}`} style={{ fontSize: '13px', color: 'var(--text)', lineHeight: 1.4 }}>
+              <div className={`stagger-4 ${ui.fontClass}`} style={{ fontSize: '12px', color: 'var(--text)', lineHeight: 1.4 }}>
                 "{hasVisited ? ui.returnGreeting : ui.greeting}"
               </div>
 
@@ -522,7 +518,6 @@ export default function Home() {
                   onClick={openShop}
                   className={`open-shop-btn ${ui.fontClass}`}
                   style={{
-                    alignSelf: 'flex-start',
                     background: 'var(--accent-brass)',
                     color: '#171b16',
                     border: 'none',
@@ -532,6 +527,7 @@ export default function Home() {
                     fontWeight: 700,
                     cursor: 'pointer',
                     marginTop: '2px',
+                    width: '100%',
                   }}
                 >
                   {ui.openShopCTA}
@@ -559,36 +555,54 @@ export default function Home() {
           }}
         >
           {/* ── HEADER BAR ── */}
-          <div className="header-bar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '8px 20px', borderBottom: '1px solid var(--border)', background: 'rgba(35, 42, 32, 0.88)', backdropFilter: 'blur(10px)', flexShrink: 0 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-              <span className={`header-title ${ui.fontClass}`} style={{ fontSize: '15px', fontWeight: 700, color: 'var(--accent-brass)', lineHeight: 1 }}>
+          <div
+            className="header-bar"
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '8px 16px',
+              borderBottom: '1px solid var(--border)',
+              background: 'rgba(35, 42, 32, 0.92)',
+              backdropFilter: 'blur(10px)',
+              flexShrink: 0,
+              gap: '8px',
+              minWidth: 0,
+            }}
+          >
+            {/* Left: title + weather */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0, flex: '0 1 auto', overflow: 'hidden' }}>
+              <span
+                className={`header-title ${ui.fontClass}`}
+                style={{ fontSize: 'clamp(11px, 3vw, 15px)', fontWeight: 700, color: 'var(--accent-brass)', lineHeight: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 'clamp(90px, 25vw, 200px)' }}
+              >
                 {currentRegTitle.title}
               </span>
               <WeatherBadge region={region} weather={weather} variant="header" />
             </div>
 
+            {/* Center: live listener count */}
             <div
               className={`header-badge ${ui.fontClass}`}
-              style={{ 
-                fontSize: '11px', 
-                color: 'var(--text)', 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '8px',
+              style={{
+                fontSize: 'clamp(9px, 2.5vw, 11px)',
+                color: 'var(--text)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
                 background: 'rgba(23, 27, 22, 0.8)',
-                padding: '6px 12px',
+                padding: '5px 10px',
                 borderRadius: '999px',
                 border: '1px solid rgba(255, 255, 255, 0.1)',
-                boxShadow: '0 2px 12px rgba(0,0,0,0.4)',
                 fontWeight: 500,
+                flexShrink: 0,
+                whiteSpace: 'nowrap',
               }}
               aria-live="polite"
             >
-              <span className="live-dot-pulse" style={{ width: 6, height: 6, borderRadius: '50%', background: isPlaying ? '#4caf50' : 'var(--muted)', display: 'inline-block' }} />
+              <span className="live-dot-pulse" style={{ width: 6, height: 6, borderRadius: '50%', background: isPlaying ? '#4caf50' : 'var(--muted)', display: 'inline-block', flexShrink: 0 }} />
               {listenerLabel}
             </div>
 
-            {/* My Card button */}
+            {/* Right: Card button */}
             <button
               id="my-card-btn"
               onClick={() => setShowCard(true)}
@@ -597,22 +611,23 @@ export default function Home() {
                 background: 'rgba(23, 27, 22, 0.8)',
                 border: '1px solid rgba(255,255,255,0.1)',
                 borderRadius: '999px',
-                padding: '5px 12px',
-                fontSize: '11px',
+                padding: '5px 10px',
+                fontSize: 'clamp(10px, 2.5vw, 11px)',
                 fontWeight: 600,
                 color: 'var(--accent-brass)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
-                gap: 5,
-                boxShadow: '0 2px 12px rgba(0,0,0,0.4)',
+                gap: 4,
+                flexShrink: 0,
+                whiteSpace: 'nowrap',
               }}
             >
-              🪒 Card
+              🪒 <span className="header-card-btn-text">Card</span>
             </button>
           </div>
 
-          {/* ── BODY: ANCHORED BOTTOM-LEFT, HIGHLY MINIMALIST ── */}
+          {/* ── BODY: player card anchored bottom ── */}
           <div
             className="player-bottom-container"
             style={{
@@ -620,19 +635,20 @@ export default function Home() {
               display: 'flex',
               alignItems: 'flex-end',
               justifyContent: 'flex-start',
-              padding: '0 0 32px 32px',
+              padding: 'clamp(0px, 2vw, 0px) clamp(8px, 2vw, 16px) clamp(12px, 3vh, 28px) clamp(8px, 3vw, 28px)',
               minHeight: 0,
             }}
           >
-            <div className="player-row" style={{ display: 'flex', alignItems: 'flex-end', gap: '16px', maxWidth: '100%' }}>
-              {/* DETACHED BARBER POLE */}
+            <div
+              className="player-row"
+              style={{ display: 'flex', alignItems: 'flex-end', gap: '12px', width: '100%', maxWidth: '520px' }}
+            >
+              {/* DETACHED BARBER POLE (hidden on mobile via CSS) */}
               <div
                 className="surface-card detached-barber-pole"
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: '12px 12px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  padding: '12px',
                   background: 'rgba(35, 42, 32, 0.92)',
                   backdropFilter: 'blur(16px)',
                   borderRadius: '12px',
@@ -644,7 +660,7 @@ export default function Home() {
                 <BarberPole isPlaying={isPlaying} size="sm" />
               </div>
 
-              {/* MINIMALIST PLAYER CARD */}
+              {/* PLAYER CARD — full width on mobile */}
               <div
                 className="surface-card player-card-widget"
                 style={{
@@ -654,20 +670,21 @@ export default function Home() {
                   padding: '14px 16px',
                   borderRadius: '12px',
                   overflow: 'hidden',
-                  width: '350px',
-                  maxWidth: 'calc(100vw - 120px)', /* Prevent horizontal overflow */
+                  flex: 1,
+                  minWidth: 0,
+                  width: '100%',
                   background: 'rgba(35, 42, 32, 0.92)',
                   backdropFilter: 'blur(16px)',
                   boxShadow: '0 10px 32px rgba(0,0,0,0.7)',
                   border: '1px solid var(--border)',
                 }}
               >
-                {/* TIGHT CARD CONTENTS */}
+                {/* Track info */}
                 <div>
                   <div
                     className="font-display"
                     style={{
-                      fontSize: '1.15rem',
+                      fontSize: 'clamp(0.95rem, 4vw, 1.15rem)',
                       color: 'var(--text)',
                       lineHeight: 1.2,
                       marginBottom: '2px',
@@ -678,7 +695,7 @@ export default function Home() {
                   >
                     {currentTrack?.title ?? 'Loading…'}
                   </div>
-                  <div style={{ fontFamily: 'Work Sans, sans-serif', fontSize: '11px', color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <div style={{ fontFamily: 'Work Sans, sans-serif', fontSize: '11px', color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
                     <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{currentTrack?.artist ?? ''}</span>
                     {currentTrack?.year && (
                       <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '9px', color: 'var(--accent-poster)', background: 'rgba(179,58,58,0.14)', padding: '0 4px', borderRadius: '3px', flexShrink: 0 }}>
@@ -691,29 +708,24 @@ export default function Home() {
                 {/* Progress bar */}
                 <ProgressBar currentTime={currentTime} duration={duration} onSeek={seekTo} />
 
-                {/* Playback Controls & Skip Button Row */}
+                {/* Playback Controls */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  {/* Prev */}
                   <CtrlBtn id="prev-btn" onClick={prevTrack} title="Previous (←)">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
                   </CtrlBtn>
 
-                  {/* Play/Pause */}
                   <button
                     id="play-pause-btn"
                     onClick={togglePlay}
-                    title="Play / Pause (Space)"
+                    title="Play / Pause"
                     disabled={!isReady}
                     style={{
-                      width: 36,
-                      height: 36,
+                      width: 40, height: 40,
                       borderRadius: '50%',
                       background: 'var(--accent-brass)',
                       border: 'none',
                       cursor: isReady ? 'pointer' : 'not-allowed',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
                       color: '#171b16',
                       opacity: isReady ? 1 : 0.5,
                       transition: 'transform 0.15s',
@@ -727,14 +739,13 @@ export default function Home() {
                     }
                   </button>
 
-                  {/* Next */}
                   <CtrlBtn id="next-btn" onClick={nextTrack} title="Next (→)">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2-8.14 4.5 3.14-4.5 3.14V9.86zM16 6h2v12h-2z"/></svg>
                   </CtrlBtn>
 
                   <div style={{ flex: 1 }} />
 
-                  {/* Minimalist Skip Button */}
+                  {/* Skip vote button */}
                   <button
                     id="skip-vote-btn"
                     className={ui.fontClass}
@@ -742,8 +753,8 @@ export default function Home() {
                     title={ui.skipButton}
                     style={{
                       display: 'flex', alignItems: 'center', gap: '4px',
-                      padding: '4px 8px',
-                      borderRadius: '4px',
+                      padding: '6px 10px',
+                      borderRadius: '6px',
                       border: `1px solid ${hasVoted ? 'var(--accent-poster)' : 'var(--border)'}`,
                       background: hasVoted ? 'rgba(179,58,58,0.12)' : 'transparent',
                       color: hasVoted ? 'var(--accent-poster)' : 'var(--muted)',
@@ -765,7 +776,7 @@ export default function Home() {
                   </button>
                 </div>
 
-                {/* 1-Line Up Next Preview */}
+                {/* Up Next */}
                 <InlineUpNext tracks={tracks} currentIndex={currentIndex} ui={ui} barbersPickId={barbersPickId} />
 
                 {/* Region tabs */}
@@ -777,15 +788,15 @@ export default function Home() {
           {/* ── TICKER ── */}
           <NowPlayingTicker history={history} prefix={ui.tickerPrefix} fontClass={ui.fontClass} />
 
-          {/* ── KEYBOARD HINTS, CREDIT & DISCLAIMER ── */}
-          <div style={{ textAlign: 'center', padding: '4px 12px', fontSize: '9px', color: 'var(--muted)', flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-              <span className={ui.fontClass}>{ui.keyboardHint}</span>
-              <span style={{ opacity: 0.5 }}>·</span>
+          {/* ── FOOTER: CREDITS & DISCLAIMER ── */}
+          <div className="player-footer" style={{ textAlign: 'center', padding: '4px 12px', fontSize: '9px', color: 'var(--muted)', flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+              <span className={`keyboard-hint ${ui.fontClass}`}>{ui.keyboardHint}</span>
+              <span style={{ opacity: 0.5 }} className="keyboard-hint">·</span>
               <span style={{ color: 'var(--accent-brass)', fontWeight: 600 }}>Made with ❤️ by Parardha Dhar</span>
             </div>
-            <div style={{ fontSize: '8.5px', color: 'rgba(255,255,255,0.35)', letterSpacing: '0.02em', marginTop: '1px' }}>
-              ℹ️ Non-commercial ambient project. Audio is streamed live via official YouTube IFrame API. All music rights belong to their respective creators & copyright owners.
+            <div style={{ fontSize: '8px', color: 'rgba(255,255,255,0.32)', letterSpacing: '0.02em', marginTop: '1px' }}>
+              Non-commercial project · Streamed via YouTube IFrame API · All rights to respective creators
             </div>
           </div>
         </main>

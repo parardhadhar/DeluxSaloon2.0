@@ -97,6 +97,7 @@ export default function SaloonChat({ currentRegion, listenerCount }: SaloonChatP
       {/* ── Slide-out Chat Window ── */}
       {isOpen && (
         <div
+          className="saloon-chat-window"
           style={{
             position: 'fixed',
             bottom: '24px',

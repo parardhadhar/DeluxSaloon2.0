@@ -34,11 +34,9 @@ body {
   color: var(--text);
   font-family: 'Work Sans', sans-serif;
   overflow-x: hidden;
-  /* Retro scissor cursor! */
   cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="%23c9a227" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><line x1="20" y1="4" x2="8.12" y2="15.88"></line><line x1="14.47" y1="14.48" x2="20" y2="20"></line><line x1="8.12" y1="8.12" x2="12" y2="12"></line></svg>') 12 12, auto;
 }
 
-/* Make buttons use pointer or a specific grab cursor */
 button, a {
   cursor: pointer;
 }
@@ -199,8 +197,8 @@ button, a {
 
 /* Shop Shutter — hint bob + spin */
 @keyframes shutter-hint-bob {
-  0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.5; }
-  50%       { transform: translateX(-50%) translateY(-8px); opacity: 0.9; }
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50%       { transform: translateY(-8px); opacity: 0.9; }
 }
 
 @keyframes spin {
@@ -486,19 +484,38 @@ button, a {
 }
 
 /* ==========================================
-   MOBILE & TABLET RESPONSIVE MEDIA QUERIES
+   MOBILE — Full Responsive Overrides
    ========================================== */
 
 @media (max-width: 640px) {
-  /* Splash screen container adjustments */
+  /* ── SPLASH SCREEN ── */
+  /* Force center-of-screen on mobile, not anchored to corner */
+  .splash-screen-wrapper {
+    position: fixed !important;
+    inset: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    top: 0 !important;
+    display: flex !important;
+    align-items: flex-end !important;
+    justify-content: center !important;
+    padding: 0 8px 20px 8px !important;
+  }
+
   .splash-card {
     flex-direction: column !important;
-    gap: 16px !important;
-    padding: 20px 18px !important;
-    max-width: 94vw !important;
-    max-height: 90vh !important;
+    gap: 10px !important;
+    padding: 16px 14px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    max-height: 75vh !important;
     overflow-y: auto !important;
     text-align: center !important;
+  }
+
+  .splash-card .stagger-4 {
+    display: none !important; /* hide greeting quote on small screens */
   }
 
   .splash-card #open-shop-btn {
@@ -506,45 +523,61 @@ button, a {
     width: 100% !important;
   }
 
-  /* Player header bar */
+  /* ── PLAYER HEADER BAR ── */
   .header-bar {
-    padding: 6px 12px !important;
-    gap: 6px !important;
+    padding: 6px 10px !important;
+    gap: 4px !important;
+    flex-wrap: nowrap !important;
   }
 
   .header-title {
-    font-size: 13px !important;
+    font-size: 11px !important;
+    max-width: 110px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
   }
 
   .header-badge {
-    padding: 4px 8px !important;
-    font-size: 10px !important;
+    padding: 4px 7px !important;
+    font-size: 9px !important;
+    gap: 4px !important;
   }
 
-  /* Player Bottom Layout */
+  /* Hide Card button text on smallest screens */
+  .header-card-btn-text {
+    display: none !important;
+  }
+
+  /* ── PLAYER BODY ── */
   .player-bottom-container {
-    padding: 0 10px 12px 10px !important;
+    padding: 0 8px 10px 8px !important;
     justify-content: center !important;
+    align-items: flex-end !important;
   }
 
   .player-row {
     flex-direction: column !important;
-    align-items: center !important;
-    gap: 8px !important;
+    align-items: stretch !important;
+    gap: 0 !important;
     width: 100% !important;
+    max-width: 100% !important;
   }
 
+  /* Hide the detached barber pole to save space */
   .detached-barber-pole {
-    display: none !important; /* Hide pole on small screens to give full focus to player card */
+    display: none !important;
   }
 
   .player-card-widget {
     width: 100% !important;
     max-width: 100% !important;
-    padding: 12px !important;
+    padding: 12px 12px !important;
     gap: 8px !important;
+    border-radius: 12px !important;
   }
 
+  /* ── REGION TABS (inside player card) ── */
   .region-tabs-container {
     display: flex;
     overflow-x: auto;
@@ -555,24 +588,58 @@ button, a {
   .region-tab {
     flex: 1;
     text-align: center;
-    padding: 6px 4px !important;
+    padding: 6px 2px !important;
     font-size: 9px !important;
+    min-width: 0;
   }
 
-  /* Diegetic Scene Bubble positioning on mobile */
+  /* ── SCENE BUBBLES ── */
   .scene-bubble-container {
-    top: 18% !important;
-    right: 4% !important;
-    max-width: 170px !important;
-    font-size: 11px !important;
-    padding: 6px 12px !important;
+    top: 12% !important;
+    right: 3% !important;
+    max-width: 150px !important;
+    font-size: 10px !important;
+    padding: 6px 10px !important;
   }
 
-  /* Toast comment positioning on mobile */
+  /* ── TOAST COMMENTS ── */
   .toast-comment {
     font-size: 11px !important;
-    padding: 8px 12px !important;
-    max-width: 82vw !important;
+    padding: 8px 10px !important;
+    max-width: 80vw !important;
+  }
+
+  /* ── TICKER ── */
+  .ticker-track {
+    font-size: 10px !important;
+  }
+
+  /* ── CHAT BUTTON — move up on mobile so it doesn't clash with player card ── */
+  #saloon-live-chat-toggle {
+    bottom: 80px !important;
+    right: 10px !important;
+    padding: 8px 14px !important;
+    font-size: 12px !important;
+  }
+
+  /* ── CHAT WINDOW — full width bottom sheet on mobile ── */
+  .saloon-chat-window {
+    bottom: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 16px 16px 0 0 !important;
+    height: 70vh !important;
+  }
+
+  /* ── FOOTER ── */
+  .player-footer {
+    font-size: 8px !important;
+    padding: 2px 8px !important;
+  }
+  .player-footer .keyboard-hint {
+    display: none !important; /* keyboard hints irrelevant on mobile */
   }
 }
 
@@ -592,5 +659,17 @@ button, a {
 
   .detached-barber-pole {
     display: none !important;
+  }
+}
+
+@media (max-height: 500px) {
+  /* Landscape phone — make player card very compact */
+  .player-card-widget {
+    padding: 6px 10px !important;
+    gap: 4px !important;
+  }
+  .splash-card {
+    max-height: 90vh !important;
+    overflow-y: auto !important;
   }
 }

@@ -26,12 +26,17 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Noto+Serif+Devanagari:wght@700&family=Noto+Serif+Bengali:wght@700&family=Noto+Serif+Tamil:wght@700&family=Work+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap"
           rel="stylesheet"
         />
+        {/* Favicon */}
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" type="image/png" href="/favicon.png" />
+        <link rel="shortcut icon" href="/favicon.png" />
         {/* PWA */}
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#c9a227" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="Dukaan" />
+        <meta name="apple-mobile-web-app-title" content="Deluxe Saloon" />
         <link rel="apple-touch-icon" href="/icons/icon-512.png" />
       </head>
       <body style={{ backgroundColor: '#171b16', minHeight: '100vh', overflow: 'hidden' }}>
