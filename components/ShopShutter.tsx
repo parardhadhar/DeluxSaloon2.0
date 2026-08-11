@@ -240,15 +240,45 @@ function ShutterRegionTabs({ active, onChange }: { active: Region; onChange: (r:
 }
 
 // ── DRAG HANDLE BAR ───────────────────────────────────────────────────────────
-function DragHandle({ accent, progress }: { accent: string; progress: number }) {
+function DragHandle({ accent, progress, onOpen }: { accent: string; progress: number; onOpen: () => void }) {
   return (
     <div style={{
-      position:'absolute', bottom:'3vh', left:'50%', transform:'translateX(-50%)',
+      position:'absolute', bottom:'2.5vh', left:'50%', transform:'translateX(-50%)',
       zIndex:30, display:'flex', flexDirection:'column', alignItems:'center', gap:4,
-      pointerEvents:'none', userSelect:'none', width: '92vw', textAlign: 'center',
+      userSelect:'none', width: '92vw', textAlign: 'center',
     }}>
+      {/* Prominent CLICK TO START MUSIC Button */}
+      <button
+        onClick={(e) => { e.stopPropagation(); onOpen(); }}
+        style={{
+          background: accent,
+          color: '#171b16',
+          border: 'none',
+          borderRadius: '30px',
+          padding: '10px 22px',
+          fontFamily: 'Work Sans, sans-serif',
+          fontSize: 'clamp(11px, 3vw, 13px)',
+          fontWeight: 800,
+          letterSpacing: '0.08em',
+          textTransform: 'uppercase',
+          cursor: 'pointer',
+          boxShadow: `0 6px 24px ${accent}88`,
+          pointerEvents: 'auto',
+          marginBottom: 4,
+          transition: 'transform 0.15s ease, boxShadow 0.15s ease',
+        }}
+        onMouseEnter={e => {
+          (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1.05)';
+        }}
+        onMouseLeave={e => {
+          (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)';
+        }}
+      >
+        ▶ CLICK TO START MUSIC
+      </button>
+
       {/* Up arrows */}
-      <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:2,opacity:0.5+progress*0.5,marginBottom:2}}>
+      <div style={{display:'flex',flexDirection:'column',alignItems:'center',gap:2,opacity:0.5+progress*0.5,marginBottom:2,pointerEvents:'none'}}>
         {[0.4,0.65,0.9].map((op,i)=>(
           <div key={i} style={{
             width:0,height:0,
@@ -266,21 +296,23 @@ function DragHandle({ accent, progress }: { accent: string; progress: number }) 
         opacity: 0.5 + progress * 0.45,
         boxShadow: `0 0 ${8+progress*16}px ${accent}`,
         transition: 'box-shadow 0.1s, opacity 0.1s',
+        pointerEvents: 'none',
       }}/>
       <div style={{
         fontFamily:'Work Sans,sans-serif',fontSize:'clamp(9px, 2.4vw, 10px)',
-        color:'rgba(255,255,255,0.45)',letterSpacing:'0.12em',
+        color:'rgba(255,255,255,0.55)',letterSpacing:'0.12em',
         textTransform:'uppercase',
-        animation:'shutter-hint-bob 2.4s ease-in-out infinite',
         opacity: 1 - progress * 0.8,
         marginTop: 2,
+        pointerEvents: 'none',
       }}>
-        drag up to open
+        click anywhere or drag up to open
       </div>
       <div style={{
         fontFamily: 'Work Sans, sans-serif', fontSize: 'clamp(9px, 2.4vw, 10px)',
         color: 'rgba(255,255,255,0.42)', letterSpacing: '0.04em',
         marginTop: 1,
+        pointerEvents: 'none',
       }}>
         Made with ❤️ by Parardha Dhar
       </div>
@@ -288,6 +320,7 @@ function DragHandle({ accent, progress }: { accent: string; progress: number }) 
         fontFamily: 'Work Sans, sans-serif', fontSize: 'clamp(7.5px, 2vw, 8.5px)',
         color: 'rgba(255,255,255,0.28)', letterSpacing: '0.02em',
         marginTop: 1,
+        pointerEvents: 'none',
       }}>
         Streamed via official YouTube Music API · Non-commercial project
       </div>
@@ -360,11 +393,14 @@ export default function ShopShutter({ region, onRegionChange, onReveal }: ShopSh
 
   const onPointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     if (completed || startYRef.current === null) return;
+    const clickDistance = Math.abs(startYRef.current - e.clientY);
     startYRef.current = null;
     try {
       (e.currentTarget as HTMLDivElement).releasePointerCapture(e.pointerId);
     } catch {}
-    if (currentPctRef.current >= DRAG_THRESHOLD * 100) {
+
+    // Single click / tap (distance < 10px) OR dragged above threshold => OPEN SHUTTER
+    if (clickDistance < 10 || currentPctRef.current >= DRAG_THRESHOLD * 100) {
       triggerOpen();
     } else {
       snapBack();
@@ -416,8 +452,8 @@ export default function ShopShutter({ region, onRegionChange, onReveal }: ShopSh
         {/* Region selector */}
         <ShutterRegionTabs active={region} onChange={onRegionChange}/>
 
-        {/* Drag handle + arrows */}
-        <DragHandle accent={t.accent} progress={dragProgress}/>
+        {/* Drag handle + CTA button */}
+        <DragHandle accent={t.accent} progress={dragProgress} onOpen={triggerOpen}/>
       </div>
     </div>
   );
